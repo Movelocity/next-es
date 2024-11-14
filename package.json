@@ -1,0 +1,37 @@
+{
+  "name": "web",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@codemirror/lang-javascript": "^6.2.2",
+    "@codemirror/lang-json": "^6.0.1",
+    "@elastic/elasticsearch": "^8.15.2",
+    "@uiw/codemirror-extensions-langs": "^4.23.3",
+    "@uiw/codemirror-theme-abyss": "^4.23.3",
+    "@uiw/codemirror-theme-dracula": "^4.23.3",
+    "@uiw/react-codemirror": "^4.23.3",
+    "classnames": "^2.5.1",
+    "lodash": "^4.17.21",
+    "next": "14.2.13",
+    "react": "^18",
+    "react-codemirror-merge": "^4.23.3",
+    "react-dom": "^18",
+    "zustand": "^5.0.0-rc.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "eslint": "^8",
+    "eslint-config-next": "14.2.13",
+    "postcss": "^8",
+    "tailwindcss": "^3.4.1",
+    "typescript": "^5"
+  }
+}
