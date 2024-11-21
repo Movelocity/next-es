@@ -17,14 +17,14 @@ const es = new Client({
 export const POST = async (req: NextRequest) => {
   const searchParams = req.nextUrl.searchParams;
   const index = searchParams.get('index') ?? "";
-  const searchDict = req.body;
+  const searchDict = await req.json();
 
   try {
     const result = await es.search({
       index: index,
       ...searchDict
     });
-    console.log(result)
+    console.log("took: ", result.took)
     return NextResponse.json(result);
 
   } catch (err:any) {

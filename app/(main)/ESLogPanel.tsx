@@ -79,6 +79,7 @@ const ESLogPanel = () => {
 
       setSearchRes(responseText)
       storeSearchRes(responseText)
+      setIsListView(false)
     } catch (e) {
       console.log(e)
     }
@@ -150,9 +151,10 @@ const ESLogPanel = () => {
               </div>
             </div>
           </div>
-
         </div>
+
         <DragBar className="w-3" updateDrag={setLeftRatio}/>
+
         <div className='h-full flex flex-col' style={{width: rightEditorWidth}}>
           <div className="flex flex-row">
             <OptionGroup options={['Json', 'List']} onSelect={(v)=>{
