@@ -30,7 +30,7 @@ interface KeyValuePairGroupProps {
   onUpdate?: (key_name: string, newValue: string) => void;
 }
 
-export const KeyValuePairGroup: React.FC<KeyValuePairGroupProps> = memo(({ pairs, onUpdate }) => {
+export const KeyValuePairGroup: React.FC<KeyValuePairGroupProps> = ({ pairs, onUpdate }) => {
   const [data, setData] = useState(pairs);
   const containerRef = useRef(null);
   // console.log(typeof(pairs), pairs)
@@ -77,4 +77,5 @@ export const KeyValuePairGroup: React.FC<KeyValuePairGroupProps> = memo(({ pairs
       ))}
     </div>
   );
-})
+}
+KeyValuePairGroup.displayName = "KeyValuePairGroup"

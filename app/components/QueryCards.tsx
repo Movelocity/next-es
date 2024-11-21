@@ -12,13 +12,13 @@ type QueryCardState = {
   templateStr: string
 }
 
-const sampleQueryCards: QueryCardState[] = [
-  {
-    id: 0,
-    title: titleTemplate,
-    templateStr: queryTemplate,
-  }
-]
+// const sampleQueryCards: QueryCardState[] = [
+//   {
+//     id: 0,
+//     title: titleTemplate,
+//     templateStr: queryTemplate,
+//   }
+// ]
 
 const QueryCards = () => {
   const eslogStore = useESLogStore()
@@ -38,14 +38,14 @@ const QueryCards = () => {
     setTimeout(()=>{ hasReadlocalStorage.current = true }, 3000) // 让监听 queryCards 的 useEffect 冷静一下，不要急着更新
 
     setClientSideLoaded(true)
-  }, []);
+  }, [queryCardsStr]);
 
   // Save to localStorage whenever queryCards updates
   useEffect(() => {
     if(!hasReadlocalStorage.current) return
     storeQueryCardsStr(JSON.stringify(queryCards))
     console.log('queryCards updated')
-  }, [queryCards]);
+  }, [queryCards, storeQueryCardsStr]);
 
   return (
     <div className="h-full relative">

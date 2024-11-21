@@ -9,7 +9,7 @@ import { query_value1, result_value1 } from './examples'
 type StoreStateValues = {
   searchReq: string
   searchRes: string
-  gSearchParams: {}
+  gSearchParams: Record<string, string>
   queryCardsStr: string
 }
 
@@ -18,8 +18,8 @@ type StoreState = StoreStateValues & {
   setSearchRes: (searchRes: string) => void
   storeSearchReq: (text: string) => void
   storeSearchRes: (text: string) => void
-  setGlobalSearchParams: (params: {}) => void
-  storeGlobalSearchParams: (params: {}) => void
+  setGlobalSearchParams: (params: Record<string, string>) => void
+  storeGlobalSearchParams: (params: Record<string, string>) => void
   storeQueryCardsStr: (queryCardsStr: string) => void
 }
 
@@ -68,7 +68,7 @@ export const createESLogStore = () => {
           return newState;
         });
       },
-      setGlobalSearchParams: (params: {}) => set(() => ({ gSearchParams: params })),
+      setGlobalSearchParams: (params: Record<string, string>) => set(() => ({ gSearchParams: params })),
       storeGlobalSearchParams: (params)=> {
         set((state) => {
           const newState = { ...state, gSearchParams: params };

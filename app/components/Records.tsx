@@ -12,7 +12,7 @@ interface RecordItemProps {
   message: string
   level?: string
 }
-const RecordItem: React.FC<RecordItemProps> = ({ createTime,  param, message }) => {
+const RecordItem: React.FC<RecordItemProps> = ({ createTime, param, message }) => {
   // 鼠标选中段落，ctrl+Enter 进行 json 格式化
   const [showDetail, setShowDetail] = useState(false)
   const [displayContent, setDisplayContent] = useState(message.replace('\n', ''))
@@ -42,7 +42,7 @@ const RecordItem: React.FC<RecordItemProps> = ({ createTime,  param, message }) 
   const keyBinding = Prec.highest(
     keymap.of([{
       key: "Ctrl-Enter",
-      run: (view) => {
+      run: (_) => {
         reformatSelectedJson()
         return true;
       },
@@ -84,6 +84,7 @@ interface RecordListProps {
 }
 
 const RecordList: React.FC<RecordListProps> = ({ records }) => {
+  console.log("records:", records)
   return (
     <div className="flex flex-col justify-start w-full overflow-y-scroll h-[calc(100vh-60px)] custom-scroll bg-zinc-900">
       {/* <div className='ml-2'>display records: {records.length}</div> */}

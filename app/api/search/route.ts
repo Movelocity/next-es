@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Client } from "@elastic/elasticsearch"
+import Error from 'next/error';
 
 export const runtime = "nodejs";
 
@@ -27,7 +28,7 @@ export const POST = async (req: NextRequest) => {
     console.log("took: ", result.took)
     return NextResponse.json(result);
 
-  } catch (err:any) {
+  } catch (err: Error | any) {
     console.error(err);
     return NextResponse.json({ error: err.message });
   }

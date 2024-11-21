@@ -24,6 +24,25 @@ import OptionGroup from '@/components/_partial/OptionGroup'
 
 const filterValue = `param,createTime,message`
 
+const getRecords = (searchRes:string, value_filter: string) => {
+  try{
+    // console.log("searchRes: ", searchRes)
+    // console.log('value_filter: ', value_filter)
+    let hits = JSON.parse(searchRes).hits
+    // console.log('hits: ', hits)
+    if(!hits.length || hits.length==0) {  // 没有就过滤后再检测
+      hits = JSON.parse(parseEsLog(searchRes, value_filter)).hits
+      if(!hits.length || hits.length==0) throw new Error('hits 为空')
+    }
+    console.log("hits count", hits.length)
+    return hits
+  } catch (err) {
+    console.log("err", err)
+    console.log(' 请先尝试过滤json文本, 使得 object.hits 为数组')
+  }
+  return []
+}
+
 const px = (n: number) => `${n}px`
 
 const ESLogPanel = () => {
@@ -45,25 +64,6 @@ const ESLogPanel = () => {
 
   const [isListView, setIsListView] = useState(false)
   const [isCardView, setIsCardView] = useState(true)
-
-  const getRecords:any = () => {
-    try{
-      const hits = JSON.parse(searchRes).hits
-      if(!hits.length || hits.length==0) throw new Error('hits 为空')
-      console.log("hits count", hits.length)
-      return hits
-    } catch (error) {
-      try{
-        const hits = JSON.parse(parseEsLog(searchRes, value_filter)).hits
-        if(!hits.length || hits.length==0) throw new Error('hits 为空')
-        // console.log("hits count", hits.length)
-        return hits
-      } catch (error) {
-        console.log(error+' 请先尝试过滤json文本, 使得 object.hits 为数组')
-      }
-    }
-    return []
-  }
 
   const doReqeust = async () => {
     const req_ctx = parseReqCtx(searchReq, left_line_number.current)
@@ -88,7 +88,7 @@ const ESLogPanel = () => {
   const keyBinding = Prec.highest(
     keymap.of([{
       key: "Ctrl-Enter",
-      run: (view) => {
+      run: (_) => {
         doReqeust()
         return true;
       },
@@ -166,7 +166,7 @@ const ESLogPanel = () => {
             }} />
           </div>
           { isListView ? 
-            <RecordList records={getRecords()} />
+            <RecordList records={getRecords(searchRes, value_filter)} />
             :
             <CodeMirror 
               value={searchRes}

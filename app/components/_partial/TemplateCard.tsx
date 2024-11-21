@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { parseReqCtx } from '@/utils/text_process'
 import { run_query } from '@/utils/api'
 import { useESLogStore } from '@/utils/store'
-import { KeyValuePair, KeyValuePairGroup } from './KeyValuePair';
+import { KeyValuePair } from './KeyValuePair';
 
 type TemplateCardState = {
   id: number
@@ -87,7 +87,7 @@ const TemplateCard: React.FC<TemplateCardState> = ({ id, title, templateStr, onE
         </div>
       </div>
       <div className='flex flex-col w-full'>
-        {Object.entries(kvMap).filter(([key_name, _]) => !key_name.startsWith('$')).map(([key_name, value], index) => (
+        {Object.entries(kvMap).filter(([key_name]) => !key_name.startsWith('$')).map(([key_name, value], index) => (
           <KeyValuePair 
             key={index} 
             index={index}
