@@ -62,11 +62,11 @@ const TemplateCard: React.FC<TemplateCardState> = ({ id, title, templateStr, onE
         finalTemplate = finalTemplate.replace(new RegExp(`{%${key}=[^%]*%}|{%${key}%}`, 'g'), value);
       }
     });
-    console.log(finalTemplate);
     
     const req_ctx = parseReqCtx(finalTemplate, 2)
     if (!req_ctx) return
     const { method, target, requestText } = req_ctx
+    console.log("requestText", requestText);
     try{
       const responseText = await run_query(method, target, requestText)
       setSearchRes(responseText)
