@@ -1,37 +1,34 @@
 import React from 'react'
 import RecordItem, { RecordItemProps } from '@/components/SearchResults/RecordItem'
-import { parseEsLog } from '@/utils/json_filter'
 
 interface RecordListProps {
   searchRes: string
-  value_filter: string
 }
 
-const getRecords = (searchRes:string, value_filter: string) => {
+const getRecords = (searchRes:string) => {
   try{
     let hits = JSON.parse(searchRes).hits
-    // console.log('hits: ', hits)
-    if(!hits.length || hits.length==0) {  // 没有就过滤后再检测
-      hits = JSON.parse(parseEsLog(searchRes, value_filter)).hits
-      if(!hits.length || hits.length==0) throw new Error('hits 为空')
+    if(!hits.length || hits.length==0) {
+      throw new Error('hits 为空')
     }
     console.log("hits count", hits.length)
     return hits
   } catch (err) {
-    console.log("err", err)
-    console.log(' 请先尝试过滤json文本, 使得 object.hits 为数组')
+    console.warn(err)
+    return []
   }
-  return []
 }
 
-const RecordList: React.FC<RecordListProps> = ({ searchRes, value_filter }) => {
-  const records = getRecords(searchRes, value_filter)
-  console.log("records:", records)
+const RecordList: React.FC<RecordListProps> = ({ searchRes }) => {
+  const records = getRecords(searchRes)
+
   return (
-    <div className="flex-1 flex flex-col justify-start w-full overflow-y-scroll h-[calc(100vh-24px)] custom-scroll bg-zinc-900">
-      {records.map((record: RecordItemProps, index: number) => (
-        <RecordItem key={index} {...record} />
-      ))}
+    <div className='w-full h-full overflow-y-auto custom-scroll'>
+      <div className='flex flex-col items-center py-2 gap-2'>
+        {records.map((record: RecordItemProps, index: number) => (
+          <RecordItem key={index} {...record} />
+        ))}
+      </div>
     </div>
   )
 }
