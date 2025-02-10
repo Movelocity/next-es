@@ -17,7 +17,6 @@ const RecordItem: React.FC<RecordItemProps> = ({ createTime, param, message }) =
   const [showDetail, setShowDetail] = useState(false)
   const [displayContent, setDisplayContent] = useState(message.replace('\n', ''))
   const itemRef = useRef<HTMLDivElement>(null)
-
   const selection_range = useRef({from: 0, to: 0})
 
   const handleDetailToggle = () => {
@@ -33,7 +32,7 @@ const RecordItem: React.FC<RecordItemProps> = ({ createTime, param, message }) =
   }
 
   const reformatSelectedJson = () => {
-    console.log('format')
+    console.log('formatting...')
     const target = displayContent.slice(selection_range.current.from, selection_range.current.to)
     if(target.length === 0) return
     try{
@@ -41,7 +40,6 @@ const RecordItem: React.FC<RecordItemProps> = ({ createTime, param, message }) =
       const reparsedJson = JSON.stringify(jsonObj, null, 2)
       const prevText = displayContent.slice(0, selection_range.current.from)
       const afterText = displayContent.slice(selection_range.current.to)
-      console.log(afterText)
       if(afterText.length === 0) {
         setDisplayContent([prevText, reparsedJson].join('\n'))
       } else {
@@ -50,6 +48,23 @@ const RecordItem: React.FC<RecordItemProps> = ({ createTime, param, message }) =
     } catch(e) {
       console.log(e)
     }
+  }
+
+  const autoFormatJson = () => {
+    // Find the first { and last } in the text
+    const firstBrace = displayContent.indexOf('{')
+    const lastBrace = displayContent.lastIndexOf('}')
+    
+    if (firstBrace === -1 || lastBrace === -1 || firstBrace >= lastBrace) return
+    
+    // Update selection range
+    selection_range.current = {
+      from: firstBrace,
+      to: lastBrace + 1  // Include the last brace
+    }
+    
+    // Call the existing format function
+    reformatSelectedJson()
   }
 
   const keyBinding = Prec.highest(
@@ -72,7 +87,7 @@ const RecordItem: React.FC<RecordItemProps> = ({ createTime, param, message }) =
         <div className='absolute right-7 text-gray-300 text-sm'>{createTime}</div>
       </div>
       {showDetail && (
-        <div className="px-2">
+        <div className="px-2 relative">
           <CodeMirror 
             value={displayContent} 
             max-height="150px"
@@ -87,6 +102,13 @@ const RecordItem: React.FC<RecordItemProps> = ({ createTime, param, message }) =
               selection_range.current = {from, to}
             }}
           />
+          <button 
+            className="absolute right-4 top-2 bg-gray-700 hover:bg-gray-600 rounded-sm px-1 text-xs" 
+            onClick={autoFormatJson}
+            title="根据{}自动格式化。若格式化失败需手动选择文本区域, Ctrl+Enter"
+          >
+            Format
+          </button>
         </div>
       )}
     </div>
