@@ -77,7 +77,7 @@ const TemplateCard: React.FC<TemplateCardState> = ({ id, title, templateStr, onE
         <div className='font-bold'>{title}</div>
         <div className="flex flex-row">
           <button onClick={()=>onEdit(id)} className="px-2 hover:bg-zinc-600 bg-zinc-700 rounded-sm cursor-pointer text-sm">Edit</button>
-          <button onClick={()=>onDelete(id)} className="px-2 hover:bg-zinc-600 bg-zinc-700 rounded-sm cursor-pointer text-sm ml-2">Del</button>
+          {/* <button onClick={()=>onDelete(id)} className="px-2 hover:bg-zinc-600 bg-zinc-700 rounded-sm cursor-pointer text-sm ml-2">Del</button> */}
           <button onClick={handleRun} className="px-2 hover:bg-sky-600 bg-sky-700 rounded-sm cursor-pointer text-sm ml-2">Run</button>
         </div>
       </div>

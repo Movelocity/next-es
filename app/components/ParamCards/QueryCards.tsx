@@ -1,6 +1,6 @@
-import React, { useState, useRef, useEffect, memo } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { useESLogStore, useStore } from '@/components/EsLogPanel/store'
-import CreateCardModal from '@/components/ParamCards/CreateCardModal'
+import CreateCardModal from '@/components/ParamCards/CardModal'
 import TemplateCard from '@/components/ParamCards/TemplateCard'
 import { titleTemplate, queryTemplate } from '@/utils/examples'
 import {KeyValuePairGroup} from './KeyValuePair';
@@ -23,19 +23,21 @@ const QueryCards = () => {
 
   const hasReadlocalStorage = useRef(false)
   const [clientSideLoaded, setClientSideLoaded] = useState(false);
+
   // Load from localStorage on component mount
   useEffect(() => {
     setQueryCards(JSON.parse(queryCardsStr));
-    setTimeout(()=>{ hasReadlocalStorage.current = true }, 3000) // 让监听 queryCards 的 useEffect 冷静一下，不要急着更新
-
     setClientSideLoaded(true)
+    hasReadlocalStorage.current = true;  // 直接设置为true，不需要延迟
   }, [queryCardsStr]);
 
-  // Save to localStorage whenever queryCards updates
+  // Save to localStorage whenever queryCards updates, skip the first render
   useEffect(() => {
-    if(!hasReadlocalStorage.current) return
-    storeQueryCardsStr(JSON.stringify(queryCards))
-    console.log('queryCards updated')
+    // 确保只有在有实际数据时才进行保存
+    if (hasReadlocalStorage.current && queryCards.length > 0) {
+      storeQueryCardsStr(JSON.stringify(queryCards))
+      console.log('queryCards updated')
+    }
   }, [queryCards, storeQueryCardsStr]);
 
   return (
@@ -81,6 +83,19 @@ const QueryCards = () => {
                 }
               }
             }} 
+            onSaveAsNew={(title, content)=>{
+              setQueryCards((oldCards)=> 
+                [...oldCards, {id: oldCards.length, title:title, templateStr:content}])
+            }}
+            onDelete={()=>{
+              if(editingCardId.current === -1) return
+              if(queryCards.length === 1) {  // 如果只有一个卡片，则清空
+                setQueryCards([]);
+                storeQueryCardsStr('[]');
+              } else {
+                setQueryCards(queryCards.filter(c=>c.id !== editingCardId.current))
+              }
+            }}
           />
         }
       </div>
@@ -96,4 +111,4 @@ const QueryCards = () => {
   )
 }
 
-export default memo(QueryCards)
+export default QueryCards
