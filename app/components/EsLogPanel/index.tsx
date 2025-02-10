@@ -71,7 +71,7 @@ const ESLogPanel = () => {
   }, [])
 
   return (
-    <div className="h-[100vh] w-full flex flex-row overflow-hidden">
+    <div className="h-[100vh] w-full flex flex-row">
       <OptionGroup defaultOption={'Cards'} options={['Raw', 'Cards', 'Config']} width={leftEditorWidth}>
         <CodeMirror 
           value={searchReq} 

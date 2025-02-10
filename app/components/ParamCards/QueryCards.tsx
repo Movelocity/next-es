@@ -41,7 +41,7 @@ const QueryCards = () => {
   }, [queryCards, storeQueryCardsStr]);
 
   return (
-    <div className="max-h-screen flex flex-col overflow-hidden">
+    <div className="max-h-[calc(100vh-26px)] flex flex-col overflow-hidden">
       {clientSideLoaded && <div className='flex-shrink-0 h-24 bg-zinc-900 w-full py-2 px-4'>
         全局变量
         <KeyValuePairGroup pairs={gSearchParams} onUpdate={(key_name, newValue) => {
