@@ -16,8 +16,21 @@ const RecordItem: React.FC<RecordItemProps> = ({ createTime, param, message }) =
   // 鼠标选中段落，ctrl+Enter 进行 json 格式化
   const [showDetail, setShowDetail] = useState(false)
   const [displayContent, setDisplayContent] = useState(message.replace('\n', ''))
+  const itemRef = useRef<HTMLDivElement>(null)
 
   const selection_range = useRef({from: 0, to: 0})
+
+  const handleDetailToggle = () => {
+    const wasShown = showDetail
+    setShowDetail(!showDetail)
+    // 如果是从展开状态关闭，且标题处于sticky状态，则滚动到元素位置
+    if (wasShown && itemRef.current) {
+      const rect = itemRef.current.getBoundingClientRect()
+      if (rect.top <= 0) {
+        itemRef.current.scrollIntoView({ behavior: 'auto' })
+      }
+    }
+  }
 
   const reformatSelectedJson = () => {
     console.log('format')
@@ -50,8 +63,9 @@ const RecordItem: React.FC<RecordItemProps> = ({ createTime, param, message }) =
   );
 
   return (
-    <div className="flex flex-col w-[98%] mx-2 my-1 rounded-md border border-gray-500 border-solid bg-gray-800">
-      <div className="relative flex flex-row justify-start items-end hover:bg-gray-700 cursor-pointer px-2" onClick={()=>{setShowDetail(!showDetail)}}>
+    <div ref={itemRef} className="flex flex-col w-[98%] mx-2 my-1 rounded-md border border-gray-500 border-solid bg-gray-800">
+      {/** 点击展开详情 */}
+      <div className="flex flex-row justify-start items-end hover:bg-gray-700 cursor-pointer px-2 sticky top-0 z-10 bg-gray-800" onClick={handleDetailToggle}>
         <div className=""> &gt; </div>
         <div className="text-gray-300 ml-2 text-sm">{param}</div>
         <div className="ml-2">{message.slice(0, 41)}</div>
