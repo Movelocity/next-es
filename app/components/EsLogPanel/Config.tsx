@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React, { useRef, useState } from 'react'
 import { useESLogStore, useStore } from './store'
 import { parseEsLog } from '@/utils/json_filter'
 
@@ -7,10 +7,11 @@ const Config = () => {
   const { valueFilter, setSearchRes, storeQueryCardsStr, setValueFilter } = eslogStore.getState()
   const searchRes = useStore(state => state.searchRes)
   const fileInputRef = useRef<HTMLInputElement>(null)
-
+  const [valueFilterEdit, setValueFilterEdit] = useState(valueFilter)
   const handleExport = () => {
     const queryCardsStr = localStorage.getItem('eslog_queryCards') || '[]'
     const blob = new Blob([queryCardsStr], { type: 'application/json' })
+
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url
@@ -46,14 +47,18 @@ const Config = () => {
         <h3 className="text-sm font-medium text-neutral-300">Value Filter</h3>
         <div className="flex flex-row justify-between items-center w-full gap-2">
           <input 
-            value={valueFilter}
-            onChange={(e) => setValueFilter(e.target.value)}
+            value={valueFilterEdit}
+            onChange={(e) => setValueFilterEdit(e.target.value)}
             className="flex-1 bg-zinc-800 text-white pl-2 font-mono text-sm rounded-sm h-8 outline-none" 
             spellCheck="false"
           />
+
           <button 
             className="px-3 h-8 bg-zinc-800 hover:bg-zinc-700 rounded-sm text-sm"
-            onClick={() => setSearchRes(parseEsLog(searchRes, valueFilter))}
+            onClick={() => {
+              setValueFilter(valueFilterEdit)
+              setSearchRes(parseEsLog(searchRes, valueFilterEdit))
+            }}
           >
             Filter
           </button>

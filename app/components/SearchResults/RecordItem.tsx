@@ -6,17 +6,29 @@ import { EditorView, keymap } from '@codemirror/view'
 import { consolas_font } from '@/utils/cm_helper'
 import { Prec } from '@codemirror/state'
 
-export interface RecordItemProps {
+export interface RecordItemData {
   createTime: string
   param: string
   message: string
   level?: string
 }
-const RecordItem: React.FC<RecordItemProps> = ({ createTime, param, message }) => {
+interface RecordItemProps {
+  data: RecordItemData;
+}
+const RecordItem: React.FC<RecordItemProps> = ({ data }) => {
   // 鼠标选中段落，ctrl+Enter 进行 json 格式化
   const [showDetail, setShowDetail] = useState(false)
-  const [displayContent, setDisplayContent] = useState(message.replace('\n', ''))
+
+  // 数据检查，如果data不完整，返回空壳
+  if(!data.createTime || !data.param || !data.message) {
+    return <div className="flex flex-col w-[98%] mx-2 my-1 rounded-sm border border-gray-500 border-solid bg-gray-800">
+      <div className="text-gray-300 ml-2 text-sm">解析失败，仅支持 valueFilter: param,createTime,message</div>
+    </div>
+  }
+
+  const [displayContent, setDisplayContent] = useState(data.message.replace('\n', ''))
   const itemRef = useRef<HTMLDivElement>(null)
+
   const selection_range = useRef({from: 0, to: 0})
 
   const handleDetailToggle = () => {
@@ -52,11 +64,16 @@ const RecordItem: React.FC<RecordItemProps> = ({ createTime, param, message }) =
 
   const autoFormatJson = () => {
     // Find the first { and last } in the text
-    const firstBrace = displayContent.indexOf('{')
-    const lastBrace = displayContent.lastIndexOf('}')
-    
+    let firstBrace = displayContent.indexOf('{')
+    let lastBrace = displayContent.lastIndexOf('}')
+
+    // 如果找不到{，则尝试找[
+    if(firstBrace === -1) {
+      firstBrace = displayContent.indexOf('[')
+      lastBrace = displayContent.lastIndexOf(']')
+    }
     if (firstBrace === -1 || lastBrace === -1 || firstBrace >= lastBrace) return
-    
+
     // Update selection range
     selection_range.current = {
       from: firstBrace,
@@ -82,10 +99,11 @@ const RecordItem: React.FC<RecordItemProps> = ({ createTime, param, message }) =
       {/** 点击展开详情 */}
       <div className="flex flex-row justify-start items-end hover:bg-gray-700 cursor-pointer px-2 sticky top-0 z-10 bg-gray-800" onClick={handleDetailToggle}>
         <div className=""> &gt; </div>
-        <div className="text-gray-300 ml-2 text-sm">{param}</div>
-        <div className="ml-2">{message.slice(0, 41)}</div>
-        <div className='absolute right-7 text-gray-300 text-sm'>{createTime}</div>
+        <div className="text-gray-300 ml-2 text-sm">{data.param}</div>
+        <div className="ml-2">{data.message.slice(0, 41)}</div>
+        <div className='absolute right-7 text-gray-300 text-sm'>{data.createTime}</div>
       </div>
+
       {showDetail && (
         <div className="px-2 relative">
           <CodeMirror 

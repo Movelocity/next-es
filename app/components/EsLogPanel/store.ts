@@ -94,7 +94,7 @@ export const createESLogStore = () => {
           return newState;
         });
       },
-      setValueFilter: (valueFilter: string) => set(() => ({ valueFilter })),
+      setValueFilter: (valueFilter: string) => set(() => ({ valueFilter })), // 设计不完善，暂不写入 localStorage
     }
     const runtimeState: RuntimeState = {
       showModal: false,

@@ -1,6 +1,6 @@
 'use client'
 import React from 'react'
-import RecordItem, { RecordItemProps } from '@/components/SearchResults/RecordItem'
+import RecordItem, { RecordItemData } from '@/components/SearchResults/RecordItem'
 import { parseEsLog } from '@/utils/json_filter'
 import { useStore } from '@/components/EsLogPanel/store'
 interface RecordListProps {
@@ -19,7 +19,7 @@ const getRecords = (searchRes:string, value_filter: string) => {
     return hits
   } catch (err) {
     console.log("err", err)
-    console.log(' 请先尝试过滤json文本, 使得 object.hits 为数组')
+    console.log('请先尝试过滤json文本, 使得 object.hits 为数组')
   }
   return []
 }
@@ -30,8 +30,8 @@ const RecordList: React.FC<RecordListProps> = ({ searchRes }) => {
   const records = getRecords(searchRes, valueFilter)
   return (
     <div className="flex-1 flex flex-col justify-start w-full overflow-y-scroll h-[calc(100vh-24px)] custom-scroll bg-zinc-900">
-      {records.map((record: RecordItemProps, index: number) => (
-        <RecordItem key={index} {...record} />
+      {records.map((record: RecordItemData, index: number) => (
+        <RecordItem key={index} data={record} />
       ))}
     </div>
   )
