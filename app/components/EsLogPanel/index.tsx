@@ -1,7 +1,7 @@
 'use client'
 import React, {useState, useRef, useEffect} from 'react'
 import CodeMirror from '@uiw/react-codemirror'
-
+import { useSW } from '@/utils/sw'
 import { EditorView, keymap } from '@codemirror/view'
 import { Prec } from '@codemirror/state'
 
@@ -23,7 +23,9 @@ import Config from './Config'
 const px = (n: number) => `${n}px`
 
 const ESLogPanel = () => {
+  useSW()
   const eslogStore = useESLogStore()
+
 
   const { setSearchReq, setSearchRes } = eslogStore.getState()
   const { storeSearchReq, storeSearchRes} = eslogStore.getState()

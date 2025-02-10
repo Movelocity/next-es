@@ -19,14 +19,7 @@ const RecordItem: React.FC<RecordItemProps> = ({ data }) => {
   // 鼠标选中段落，ctrl+Enter 进行 json 格式化
   const [showDetail, setShowDetail] = useState(false)
 
-  // 数据检查，如果data不完整，返回空壳
-  if(!data.createTime || !data.param || !data.message) {
-    return <div className="flex flex-col w-[98%] mx-2 my-1 rounded-sm border border-gray-500 border-solid bg-gray-800">
-      <div className="text-gray-300 ml-2 text-sm">解析失败，仅支持 valueFilter: param,createTime,message</div>
-    </div>
-  }
-
-  const [displayContent, setDisplayContent] = useState(data.message.replace('\n', ''))
+  const [displayContent, setDisplayContent] = useState(data.message?.replace('\n', ''))
   const itemRef = useRef<HTMLDivElement>(null)
 
   const selection_range = useRef({from: 0, to: 0})
@@ -93,6 +86,13 @@ const RecordItem: React.FC<RecordItemProps> = ({ data }) => {
       },
     }])
   );
+
+  // 数据检查，如果data不完整，返回空壳
+  if(!data.createTime || !data.param || !data.message) {
+    return <div className="flex flex-col w-[98%] mx-2 my-1 rounded-sm border border-gray-500 border-solid bg-gray-800">
+      <div className="text-gray-300 ml-2 text-sm">解析失败，仅支持 valueFilter: param,createTime,message</div>
+    </div>
+  }
 
   return (
     <div ref={itemRef} className="flex flex-col w-[98%] mx-2 my-1 rounded-sm border border-gray-500 border-solid bg-gray-800">

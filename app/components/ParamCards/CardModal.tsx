@@ -90,14 +90,14 @@ const CardModal: React.FC<CardModalProps> = ({title, content, onSave, onDelete, 
           
           <button 
             onClick={handleSaveAsNew}
-            className="px-1 bg-emerald-700 hover:bg-emerald-600 rounded transition-colors"
+            className="px-1 bg-sky-700 hover:bg-sky-600 rounded transition-colors"
           >
             另存为新模板
           </button>
 
           <button 
             onClick={handleDelete}
-            className="px-1 bg-red-700 hover:bg-red-600 rounded transition-colors"
+            className="px-1 bg-zinc-700 hover:bg-zinc-600 rounded transition-colors"
           >
             删除
           </button>
