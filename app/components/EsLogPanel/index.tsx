@@ -15,12 +15,12 @@ import { consolas_font } from '@/utils/cm_helper'
 import { parseEsLog } from '@/utils/json_filter'
 import RecordList from '@/components/Records'
 import QueryCards from '@/components/ParamCards/QueryCards'
-import { run_query } from '@/utils/api'
+import { run_query } from '@/utils/service'
 
-import { useESLogStore, useStore } from '@/utils/store'
+import { useESLogStore, useStore } from './store'
 import { parseReqCtx } from '@/utils/text_process'
 import OptionGroup from '@/components/OptionGroup'
-// import InputButton from '@/components/_partial/InputButton'
+
 
 const filterValue = `param,createTime,message`
 
@@ -182,4 +182,5 @@ const ESLogPanel = () => {
     </div>
   )
 }
-export default React.memo(ESLogPanel);
+
+export default ESLogPanel

@@ -4,7 +4,7 @@ import {
 } from 'zustand'
 import { createStore } from 'zustand/vanilla'
 import { ESLogContext } from './context'
-import { query_value1, result_value1 } from './examples'
+import { query_value1, result_value1 } from '@/utils/examples'
 
 type StoreStateValues = {
   searchReq: string

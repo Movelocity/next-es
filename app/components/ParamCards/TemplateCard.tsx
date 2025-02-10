@@ -2,8 +2,8 @@
 
 import React, { useState, useEffect } from 'react';
 import { parseReqCtx } from '@/utils/text_process'
-import { run_query } from '@/utils/api'
-import { useESLogStore } from '@/utils/store'
+import { run_query } from '@/utils/service'
+import { useESLogStore } from '@/components/EsLogPanel/store'
 import { KeyValuePair } from './KeyValuePair';
 
 type TemplateCardState = {
@@ -44,11 +44,6 @@ const TemplateCard: React.FC<TemplateCardState> = ({ id, title, templateStr, onE
   useEffect(() => {
     parseSearchText();
   }, [templateStr]);
-
-  // Function to update value in kvMap
-  // const updateValue = (key: string) => (newValue: string) => {
-  //   setKvMap((prev) => ({ ...prev, [key]: newValue }));
-  // };
 
   // Function to handle run button click
   const handleRun = async () => {

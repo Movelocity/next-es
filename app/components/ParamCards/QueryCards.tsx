@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, memo } from 'react'
-import { useESLogStore, useStore } from '@/utils/store'
+import { useESLogStore, useStore } from '@/components/EsLogPanel/store'
 import CreateCardModal from '@/components/ParamCards/CreateCardModal'
 import TemplateCard from '@/components/ParamCards/TemplateCard'
 import { titleTemplate, queryTemplate } from '@/utils/examples'

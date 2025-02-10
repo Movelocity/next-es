@@ -1,5 +1,6 @@
 import React from 'react'
 import cn from 'classnames'
+import './style.css'
 
 type ModalProps = {
   show: boolean

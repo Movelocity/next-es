@@ -1,5 +1,5 @@
-import ESLogPanel from "./ESLogPanel";
-import { ESLogContextProvider } from '@/utils/context'
+import ESLogPanel from "@/components/EsLogPanel/index";
+import { ESLogContextProvider } from '@/components/EsLogPanel/context'
 
 const Page = () => {
   return (
