@@ -43,9 +43,6 @@ const ESLogPanel = () => {
   const leftEditorWidth = `calc(${Math.trunc(leftRatio*100)}% - 4px)`
   const rightEditorWidth = `calc(${Math.trunc(rightRatio*100)}% - 4px)`
 
-  const [isListView, setIsListView] = useState(false)
-  const [isCardView, setIsCardView] = useState(true)
-
   const doReqeust = async () => {
     const req_ctx = parseReqCtx(searchReq, left_line_number.current)
     if (!req_ctx) return
@@ -59,7 +56,6 @@ const ESLogPanel = () => {
       storeSearchReq(searchReq)
       setSearchRes(responseText)
       storeSearchRes(responseText)
-      setIsListView(false)
     } catch (e) {
       console.log(e)
     }
@@ -75,6 +71,7 @@ const ESLogPanel = () => {
     }])
   );
 
+  // CodeMirror 需要显式指定高度值
   const [windowHeight, setWindowHeight] = useState(720)
   useEffect(() => {
     setWindowHeight(window.innerHeight)
@@ -82,85 +79,63 @@ const ESLogPanel = () => {
   }, [])
 
   return (
-    <div className='h-full w-full flex flex-col'>
-      <div className="h-full w-full flex flex-row">
-        <div className='h-full flex flex-col' style={{width: leftEditorWidth}}>
-          <OptionGroup defaultOption={'Cards'} options={['Json', 'Cards']} onSelect={(v)=>{
-            if( v == 'Json') {
-              setIsCardView(false)
-            } else {
-              setIsCardView(true)
-            }
-          }} />
-          <div className='h-full w-full relative'>
-            <div className={cn('w-full', !isCardView&&'overflow-y-scroll custom-scroll')} style={{height: px(windowHeight-56)}}>
-              {isCardView ? 
-                <QueryCards /> 
-                : 
-                <CodeMirror 
-                  value={searchReq} 
-                  height={px(windowHeight-36)}
-                  extensions={[json(), dracula, consolas_font, keyBinding]}
-                  onChange={setSearchReq}
-                  theme={'dark'}
-                  width="100%"
-                  onUpdate={(ctx)=>{
-                    const state = ctx.state
-                    const line_number = state.doc.lineAt(state.selection.main.head).number
-                    left_line_number.current = line_number
-                  }}
-                />
-            }
-            </div>
-  
-            {/** 左下角过滤输入过滤字段 */}
-            {/* <InputButton buttonText="Filter" onButtonClick={doReqeust} initialValue=''/> */}
-            <div className="flex flex-row justify-around items-center w-full">
-              <input 
-                value={value_filter} 
-                onChange={(e)=> {setValueFilter(e.target.value)}}
-                className="bg-zinc-800 text-white pl-2 font-mono w-[70%] text-sm rounded-sm h-6 outline-none" 
-                spellCheck="false"
-              />
-              <div 
-                className='cursor-pointer rounded-sm hover:bg-zinc-800 px-3' 
-                onClick={()=>{setSearchRes(parseEsLog(searchRes, value_filter))}}
-              >
-                Filter
-              </div>
-            </div>
-          </div>
-        </div>
+    <div className="h-full w-full flex flex-row">
+      <OptionGroup defaultOption={'Cards'} options={['Raw', 'Cards', 'Config']} width={leftEditorWidth}>
+        <CodeMirror 
+          value={searchReq} 
+          height={px(windowHeight-24)}
+          extensions={[json(), dracula, consolas_font, keyBinding]}
+          onChange={setSearchReq}
+          theme={'dark'}
+          width="100%"
+          onUpdate={(ctx)=>{
+            const state = ctx.state
+            const line_number = state.doc.lineAt(state.selection.main.head).number
+            left_line_number.current = line_number
+          }}
+        />
 
-        <DragBar className="w-3" updateDrag={setLeftRatio}/>
+        <QueryCards />
 
-        <div className='h-full flex flex-col' style={{width: rightEditorWidth}}>
-          <div className="flex flex-row">
-            <OptionGroup options={['Json', 'List']} onSelect={(v)=>{
-              if( v == 'List') {
-                setIsListView(true)
-              } else {
-                setIsListView(false)
-              }
-            }} />
-          </div>
-          { isListView ? 
-            <RecordList searchRes={searchRes} value_filter={value_filter} />
-            :
-            <CodeMirror 
-              value={searchRes}
-              readOnly
-              width='100%'
-              height={px(windowHeight-36)}
-              extensions={[json(), dracula, consolas_font, EditorView.lineWrapping]}
-              onChange={setSearchRes}
-              theme={'dark'}
-              editable={false}
+        <div className={'w-full overflow-y-scroll custom-scroll'}>
+          {/** 左下角过滤输入过滤字段 */}
+          <div className="flex flex-row justify-around items-center w-full">
+            <input 
+              value={value_filter} 
+              onChange={(e)=> {setValueFilter(e.target.value)}}
+              className="bg-zinc-800 text-white pl-2 font-mono w-[70%] text-sm rounded-sm h-6 outline-none" 
+              spellCheck="false"
             />
-          }
+            <div 
+              className='cursor-pointer rounded-sm hover:bg-zinc-800 px-3' 
+              onClick={()=>{setSearchRes(parseEsLog(searchRes, value_filter))}}
+            >
+              Filter
+            </div>
+          </div>
         </div>
-      </div>
+      </OptionGroup>
+
+
+
+      <DragBar className="w-3" updateDrag={setLeftRatio}/>
+
+
+      <OptionGroup options={['Raw', 'List']} width={rightEditorWidth}>
+        <CodeMirror 
+          value={searchRes}
+          readOnly
+          width='100%'
+          height={px(windowHeight-24)}
+          extensions={[json(), dracula, consolas_font, EditorView.lineWrapping]}
+          onChange={setSearchRes}
+          theme={'dark'}
+          editable={false}
+        />
+        <RecordList searchRes={searchRes} value_filter={value_filter} />
+      </OptionGroup>
     </div>
+
   )
 }
 

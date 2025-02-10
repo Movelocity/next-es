@@ -28,7 +28,7 @@ const RecordList: React.FC<RecordListProps> = ({ searchRes, value_filter }) => {
   const records = getRecords(searchRes, value_filter)
   console.log("records:", records)
   return (
-    <div className="flex flex-col justify-start w-full overflow-y-scroll h-[calc(100vh-60px)] custom-scroll bg-zinc-900">
+    <div className="flex-1 flex flex-col justify-start w-full overflow-y-scroll h-[calc(100vh-24px)] custom-scroll bg-zinc-900">
       {records.map((record: RecordItemProps, index: number) => (
         <RecordItem key={index} {...record} />
       ))}
