@@ -41,8 +41,8 @@ const QueryCards = () => {
   }, [queryCards, storeQueryCardsStr]);
 
   return (
-    <div className="h-full flex flex-col">
-      {clientSideLoaded && <div className='h-24 bg-zinc-900 w-full py-2 px-4'>
+    <div className="max-h-screen flex flex-col overflow-hidden">
+      {clientSideLoaded && <div className='flex-shrink-0 h-24 bg-zinc-900 w-full py-2 px-4'>
         全局变量
         <KeyValuePairGroup pairs={gSearchParams} onUpdate={(key_name, newValue) => {
           const newParams = {...gSearchParams, [key_name]: newValue}
@@ -50,65 +50,67 @@ const QueryCards = () => {
           storeGlobalSearchParams(newParams)
         }}/>
       </div>}
-      <div className='flex-1 overflow-y-auto custom-scroll flex flex-col items-center py-2 gap-2'>
-        { queryCards.map((card, index) => (
-          <TemplateCard
-            key={index} 
-            onEdit={()=>{
-              editingCardId.current = card.id
-              editTitle.current = card.title
-              editTemplate.current = card.templateStr
-              setShowEditorModal(true);
-            }} 
-            onDelete={()=>setQueryCards(queryCards.filter(c=>c.id !== card.id))}
-            {...card}
-          />
+      <div className='flex-1 min-h-0 w-full overflow-y-auto custom-scroll'>
+        <div className='flex flex-col items-center py-2 gap-2'>
+          { queryCards.map((card, index) => (
+            <TemplateCard
+              key={index} 
+              onEdit={()=>{
+                editingCardId.current = card.id
+                editTitle.current = card.title
+                editTemplate.current = card.templateStr
+                setShowEditorModal(true);
+              }} 
+              onDelete={()=>setQueryCards(queryCards.filter(c=>c.id !== card.id))}
+              {...card}
+            />
+            )
           )
-        )
-        }
+          }
 
-        <div 
-          className="h-8 w-[98%] border border-solid border-gray-500 rounded-sm flex items-center justify-center cursor-pointer"
-          onClick={() => { 
-            editingCardId.current=-1; 
-            setShowEditorModal(true);
-            editTitle.current = ''
-            editTemplate.current = ''
-          }}
+          <div 
+            className="h-8 w-[98%] border border-solid border-gray-500 rounded-sm flex items-center justify-center cursor-pointer mb-12"
+            onClick={() => { 
+              editingCardId.current=-1; 
+              setShowEditorModal(true);
+              editTitle.current = ''
+              editTemplate.current = ''
+            }}
 
-        >+</div>
+          >+</div>
 
-        { showEditorModal && 
-          <CreateCardModal 
-            title={editTitle.current} 
-            content={editTemplate.current} 
-            closeModal={()=>setShowEditorModal(false)}
-            onSave={(title, content) => {
-              if(title && content){
-                if(editingCardId.current === -1) {
-                  setQueryCards((oldCards)=> 
-                    [...oldCards, {id: oldCards.length, title:title, templateStr:content}])
-                } else {
-                  setQueryCards((oldCards)=> 
-                    oldCards.map(card=> card.id === editingCardId.current ? {...card, title:title, templateStr:content} : card))
+          { showEditorModal && 
+            <CreateCardModal 
+              title={editTitle.current} 
+              content={editTemplate.current} 
+              closeModal={()=>setShowEditorModal(false)}
+              onSave={(title, content) => {
+                if(title && content){
+                  if(editingCardId.current === -1) {
+                    setQueryCards((oldCards)=> 
+                      [...oldCards, {id: oldCards.length, title:title, templateStr:content}])
+                  } else {
+                    setQueryCards((oldCards)=> 
+                      oldCards.map(card=> card.id === editingCardId.current ? {...card, title:title, templateStr:content} : card))
+                  }
                 }
-              }
-            }} 
-            onSaveAsNew={(title, content)=>{
-              setQueryCards((oldCards)=> 
-                [...oldCards, {id: oldCards.length, title:title, templateStr:content}])
-            }}
-            onDelete={()=>{
-              if(editingCardId.current === -1) return
-              if(queryCards.length === 1) {  // 如果只有一个卡片，则清空
-                setQueryCards([]);
-                storeQueryCardsStr('[]');
-              } else {
-                setQueryCards(queryCards.filter(c=>c.id !== editingCardId.current))
-              }
-            }}
-          />
-        }
+              }} 
+              onSaveAsNew={(title, content)=>{
+                setQueryCards((oldCards)=> 
+                  [...oldCards, {id: oldCards.length, title:title, templateStr:content}])
+              }}
+              onDelete={()=>{
+                if(editingCardId.current === -1) return
+                if(queryCards.length === 1) {  // 如果只有一个卡片，则清空
+                  setQueryCards([]);
+                  storeQueryCardsStr('[]');
+                } else {
+                  setQueryCards(queryCards.filter(c=>c.id !== editingCardId.current))
+                }
+              }}
+            />
+          }
+        </div>
       </div>
       
     </div>
