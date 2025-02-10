@@ -13,7 +13,7 @@ import { dracula } from '@uiw/codemirror-theme-dracula'
 import { consolas_font } from '@/utils/cm_helper'
 
 import { parseEsLog } from '@/utils/json_filter'
-import RecordList from '@/components/Records'
+import RecordList from '@/components/SearchResults/Records'
 import QueryCards from '@/components/ParamCards/QueryCards'
 import { run_query } from '@/utils/service'
 
@@ -74,7 +74,6 @@ const ESLogPanel = () => {
       const responseText = await run_query(method, target, requestText)
       // result_value.current = responseText as string
       storeSearchReq(searchReq)
-
       setSearchRes(responseText)
       storeSearchRes(responseText)
       setIsListView(false)
@@ -134,7 +133,6 @@ const ESLogPanel = () => {
             {/** 左下角过滤输入过滤字段 */}
             {/* <InputButton buttonText="Filter" onButtonClick={doReqeust} initialValue=''/> */}
             <div className="flex flex-row justify-around items-center w-full">
-              {/* <div className="hidden lg:block">过滤字段: </div> */}
               <input 
                 value={value_filter} 
                 onChange={(e)=> {setValueFilter(e.target.value)}}

@@ -6,7 +6,7 @@ import { EditorView, keymap } from '@codemirror/view'
 import { consolas_font } from '@/utils/cm_helper'
 import { Prec } from '@codemirror/state'
 
-interface RecordItemProps {
+export interface RecordItemProps {
   createTime: string
   param: string
   message: string
@@ -79,20 +79,4 @@ const RecordItem: React.FC<RecordItemProps> = ({ createTime, param, message }) =
   )
 }
 
-interface RecordListProps {
-  records: RecordItemProps[]
-}
-
-const RecordList: React.FC<RecordListProps> = ({ records }) => {
-  console.log("records:", records)
-  return (
-    <div className="flex flex-col justify-start w-full overflow-y-scroll h-[calc(100vh-60px)] custom-scroll bg-zinc-900">
-      {/* <div className='ml-2'>display records: {records.length}</div> */}
-      {records.map((record, index) => (
-        <RecordItem key={index} {...record} />
-      ))}
-    </div>
-  )
-}
-
-export default RecordList
+export default RecordItem
