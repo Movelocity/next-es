@@ -7,7 +7,7 @@ interface RecordListProps {
 
 const getRecords = (searchRes:string) => {
   try{
-    let hits = JSON.parse(searchRes).hits
+    const hits = JSON.parse(searchRes).hits
     if(!hits.length || hits.length==0) {
       throw new Error('hits 为空')
     }
