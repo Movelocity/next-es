@@ -19,7 +19,7 @@ const RecordItem: React.FC<RecordItemProps> = ({ createTime, param, message }) =
 
   const selection_range = useRef({from: 0, to: 0})
 
-  const reformatSelectedJson = useCallback(() => {
+  const reformatSelectedJson = () => {
     console.log('format')
     const target = displayContent.slice(selection_range.current.from, selection_range.current.to)
     if(target.length === 0) return
@@ -37,7 +37,7 @@ const RecordItem: React.FC<RecordItemProps> = ({ createTime, param, message }) =
     } catch(e) {
       console.log(e)
     }
-  }, [displayContent, selection_range])
+  }
 
   const keyBinding = Prec.highest(
     keymap.of([{

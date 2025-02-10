@@ -24,23 +24,6 @@ import OptionGroup from '@/components/OptionGroup'
 
 const filterValue = `param,createTime,message`
 
-const getRecords = (searchRes:string, value_filter: string) => {
-  try{
-    let hits = JSON.parse(searchRes).hits
-    // console.log('hits: ', hits)
-    if(!hits.length || hits.length==0) {  // 没有就过滤后再检测
-      hits = JSON.parse(parseEsLog(searchRes, value_filter)).hits
-      if(!hits.length || hits.length==0) throw new Error('hits 为空')
-    }
-    console.log("hits count", hits.length)
-    return hits
-  } catch (err) {
-    console.log("err", err)
-    console.log(' 请先尝试过滤json文本, 使得 object.hits 为数组')
-  }
-  return []
-}
-
 const px = (n: number) => `${n}px`
 
 const ESLogPanel = () => {
@@ -162,7 +145,7 @@ const ESLogPanel = () => {
             }} />
           </div>
           { isListView ? 
-            <RecordList records={getRecords(searchRes, value_filter)} />
+            <RecordList searchRes={searchRes} value_filter={value_filter} />
             :
             <CodeMirror 
               value={searchRes}
