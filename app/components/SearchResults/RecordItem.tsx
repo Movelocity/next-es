@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import CodeMirror from '@uiw/react-codemirror'
 import { json } from '@codemirror/lang-json'
 import { dracula } from '@uiw/codemirror-theme-dracula'
@@ -23,6 +23,10 @@ const RecordItem: React.FC<RecordItemProps> = ({ data }) => {
   const itemRef = useRef<HTMLDivElement>(null)
 
   const selection_range = useRef({from: 0, to: 0})
+
+  useEffect(()=> {
+    setDisplayContent(data.message?.replace('\n', ''))
+  }, [data.message]);
 
   const handleDetailToggle = () => {
     const wasShown = showDetail
@@ -60,11 +64,12 @@ const RecordItem: React.FC<RecordItemProps> = ({ data }) => {
     let firstBrace = displayContent.indexOf('{')
     let lastBrace = displayContent.lastIndexOf('}')
 
-    // 如果找不到{，则尝试找[
-    if(firstBrace === -1) {
+    // 如果{左边有[，则尝试找 [ 和 ]
+    if(firstBrace-1 >= 0 && displayContent[firstBrace-1] === '[') {
       firstBrace = displayContent.indexOf('[')
       lastBrace = displayContent.lastIndexOf(']')
     }
+
     if (firstBrace === -1 || lastBrace === -1 || firstBrace >= lastBrace) return
 
     // Update selection range
