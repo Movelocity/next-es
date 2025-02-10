@@ -11,7 +11,9 @@ type StoreStateValues = {
   searchRes: string
   gSearchParams: Record<string, string>
   queryCardsStr: string
+  valueFilter: string
 }
+
 
 type StoreState = StoreStateValues & {
   setSearchReq: (searchReq: string) => void
@@ -21,7 +23,9 @@ type StoreState = StoreStateValues & {
   setGlobalSearchParams: (params: Record<string, string>) => void
   storeGlobalSearchParams: (params: Record<string, string>) => void
   storeQueryCardsStr: (queryCardsStr: string) => void
+  setValueFilter: (valueFilter: string) => void
 }
+
 
 type RuntimeState = {
   showModal: boolean
@@ -35,16 +39,23 @@ const S_REQ = LOCAL_STORAGE_KEY+'_searchRequest'
 const S_RES = LOCAL_STORAGE_KEY+'_searchResult'
 const S_GParam = LOCAL_STORAGE_KEY+'_globalParams'
 const S_QueryCard = LOCAL_STORAGE_KEY+'_queryCards';
+const S_ValueFilter = LOCAL_STORAGE_KEY+'_valueFilter';
+
+const DEFAULT_VALUE_FILTER = 'param,createTime,message'
 const loadFromLocalStorage: ()=>StoreStateValues = () => {
-  if(typeof localStorage == 'undefined') return {searchReq: '',searchRes: '',gSearchParams: {}, queryCardsStr: '[]'}
+
+  if(typeof localStorage == 'undefined') return {searchReq: '',searchRes: '',gSearchParams: {}, queryCardsStr: '[]', valueFilter: DEFAULT_VALUE_FILTER}
   const s_gparam = localStorage.getItem(S_GParam)
+
   return {
     searchReq: localStorage.getItem(S_REQ) || query_value1,
     searchRes: localStorage.getItem(S_RES) || result_value1,
     gSearchParams: s_gparam? JSON.parse(s_gparam) : {"$开始时间": "2024-10-13 00:00:00", "$结束时间": "2024-10-14 00:00:00"}, 
-    queryCardsStr: localStorage.getItem(S_QueryCard) || '[]'
+    queryCardsStr: localStorage.getItem(S_QueryCard) || '[]',
+    valueFilter: localStorage.getItem(S_ValueFilter) || DEFAULT_VALUE_FILTER
   }
 };
+
 
 export const createESLogStore = () => {
   return createStore<ESLogState>((set) => {
@@ -83,6 +94,7 @@ export const createESLogStore = () => {
           return newState;
         });
       },
+      setValueFilter: (valueFilter: string) => set(() => ({ valueFilter })),
     }
     const runtimeState: RuntimeState = {
       showModal: false,

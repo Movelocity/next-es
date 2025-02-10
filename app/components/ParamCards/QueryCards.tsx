@@ -61,7 +61,6 @@ const QueryCards = () => {
                 editTemplate.current = card.templateStr
                 setShowEditorModal(true);
               }} 
-              onDelete={()=>setQueryCards(queryCards.filter(c=>c.id !== card.id))}
               {...card}
             />
             )

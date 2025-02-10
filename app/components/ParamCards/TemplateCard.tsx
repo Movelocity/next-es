@@ -11,37 +11,38 @@ type TemplateCardState = {
   title: string
   templateStr: string
   onEdit: (id: number) => void
-  onDelete: (id: number) => void
 };
 
-const TemplateCard: React.FC<TemplateCardState> = ({ id, title, templateStr, onEdit, onDelete }) => {
+const TemplateCard: React.FC<TemplateCardState> = ({ id, title, templateStr, onEdit }) => {
   const eslogStore = useESLogStore()
   const { setSearchRes, storeSearchRes } = eslogStore.getState()
 
   const [kvMap, setKvMap] = useState<{ [key: string]: string }>({});
-  // Function to parse searchText and initialize kvMap
-  const parseSearchText = () => {
-    const regex = /{%(.+)([^%]*)%}/g;
-    const matches = Array.from(templateStr.matchAll(regex));
-    const initialMap: { [key: string]: string } = {};
-
-    matches.forEach((match) => {
-      const matchText = match[1]
-      // if(matchText.startsWith('$')) return
-      if(matchText.includes('=')) {
-        const parts = match[1].split('=');
-        const key = parts[0].trim();
-        const defaultVal = parts[1];
-        initialMap[key] = defaultVal;
-      } else {
-        initialMap[matchText] = '';
-      }
-    });
-
-    setKvMap(initialMap);
-  };
+  
 
   useEffect(() => {
+    // Function to parse searchText and initialize kvMap
+    const parseSearchText = () => {
+      const regex = /{%(.+)([^%]*)%}/g;
+      const matches = Array.from(templateStr.matchAll(regex));
+      const initialMap: { [key: string]: string } = {};
+
+      matches.forEach((match) => {
+        const matchText = match[1]
+        // if(matchText.startsWith('$')) return
+        if(matchText.includes('=')) {
+          const parts = match[1].split('=');
+          const key = parts[0].trim();
+          const defaultVal = parts[1];
+          initialMap[key] = defaultVal;
+        } else {
+          initialMap[matchText] = '';
+        }
+      });
+
+      setKvMap(initialMap);
+    };
+
     parseSearchText();
   }, [templateStr]);
 

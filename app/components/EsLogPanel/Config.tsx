@@ -1,12 +1,11 @@
-import React, { useState, useRef } from 'react'
+import React, { useRef } from 'react'
 import { useESLogStore, useStore } from './store'
 import { parseEsLog } from '@/utils/json_filter'
 
 const Config = () => {
   const eslogStore = useESLogStore()
-  const { setSearchRes, storeQueryCardsStr } = eslogStore.getState()
+  const { valueFilter, setSearchRes, storeQueryCardsStr, setValueFilter } = eslogStore.getState()
   const searchRes = useStore(state => state.searchRes)
-  const [valueFilter, setValueFilter] = useState('param,createTime,message')
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const handleExport = () => {
