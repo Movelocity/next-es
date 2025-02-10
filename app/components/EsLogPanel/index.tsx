@@ -5,8 +5,6 @@ import CodeMirror from '@uiw/react-codemirror'
 import { EditorView, keymap } from '@codemirror/view'
 import { Prec } from '@codemirror/state'
 
-import cn from 'classnames'
-
 import DragBar from '@/components/DragBar'
 import { json } from '@codemirror/lang-json'
 import { dracula } from '@uiw/codemirror-theme-dracula'
@@ -20,6 +18,7 @@ import { run_query } from '@/utils/service'
 import { useESLogStore, useStore } from './store'
 import { parseReqCtx } from '@/utils/text_process'
 import OptionGroup from '@/components/OptionGroup'
+import { useRatio } from './useRatio'
 
 
 const filterValue = `param,createTime,message`
@@ -38,10 +37,7 @@ const ESLogPanel = () => {
   const left_line_number = useRef(0)
   const [value_filter, setValueFilter] = useState(filterValue)
   
-  const [leftRatio, setLeftRatio] = useState(0.3);
-  const rightRatio = 1 - leftRatio;
-  const leftEditorWidth = `calc(${Math.trunc(leftRatio*100)}% - 4px)`
-  const rightEditorWidth = `calc(${Math.trunc(rightRatio*100)}% - 4px)`
+  const { leftEditorWidth, rightEditorWidth, setLeftRatio } = useRatio()
 
   const doReqeust = async () => {
     const req_ctx = parseReqCtx(searchReq, left_line_number.current)
@@ -116,10 +112,7 @@ const ESLogPanel = () => {
         </div>
       </OptionGroup>
 
-
-
       <DragBar className="w-3" updateDrag={setLeftRatio}/>
-
 
       <OptionGroup options={['Raw', 'List']} width={rightEditorWidth}>
         <CodeMirror 

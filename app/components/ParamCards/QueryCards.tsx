@@ -41,10 +41,18 @@ const QueryCards = () => {
   }, [queryCards, storeQueryCardsStr]);
 
   return (
-    <div className="h-full relative">
-      <div className='h-full overflow-y-scroll custom-scroll flex flex-col px-2 pt-28'>
+    <div className="h-full flex flex-col">
+      {clientSideLoaded && <div className='h-24 bg-zinc-900 w-full py-2 px-4'>
+        全局变量
+        <KeyValuePairGroup pairs={gSearchParams} onUpdate={(key_name, newValue) => {
+          const newParams = {...gSearchParams, [key_name]: newValue}
+          setGlobalSearchParams(newParams)
+          storeGlobalSearchParams(newParams)
+        }}/>
+      </div>}
+      <div className='flex-1 overflow-y-auto custom-scroll flex flex-col items-center py-2 gap-2'>
         { queryCards.map((card, index) => (
-          <TemplateCard 
+          <TemplateCard
             key={index} 
             onEdit={()=>{
               editingCardId.current = card.id
@@ -58,15 +66,18 @@ const QueryCards = () => {
           )
         )
         }
+
         <div 
-          className="m-1 px-2 h-8 w-full border border-solid border-gray-500 rounded-md flex flex-col items-center justify-center cursor-pointer"
+          className="h-8 w-[98%] border border-solid border-gray-500 rounded-sm flex items-center justify-center cursor-pointer"
           onClick={() => { 
             editingCardId.current=-1; 
             setShowEditorModal(true);
             editTitle.current = ''
             editTemplate.current = ''
           }}
+
         >+</div>
+
         { showEditorModal && 
           <CreateCardModal 
             title={editTitle.current} 
@@ -99,14 +110,7 @@ const QueryCards = () => {
           />
         }
       </div>
-      {clientSideLoaded && <div className='h-24 bg-black border-b border-dashed border-gray-400 absolute top-0 w-full py-2 px-4'>
-        全局变量
-        <KeyValuePairGroup pairs={gSearchParams} onUpdate={(key_name, newValue) => {
-          const newParams = {...gSearchParams, [key_name]: newValue}
-          setGlobalSearchParams(newParams)
-          storeGlobalSearchParams(newParams)
-        }}/>
-      </div>}
+      
     </div>
   )
 }

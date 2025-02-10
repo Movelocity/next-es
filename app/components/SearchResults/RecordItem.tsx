@@ -78,7 +78,7 @@ const RecordItem: React.FC<RecordItemProps> = ({ createTime, param, message }) =
   );
 
   return (
-    <div ref={itemRef} className="flex flex-col w-[98%] mx-2 my-1 rounded-md border border-gray-500 border-solid bg-gray-800">
+    <div ref={itemRef} className="flex flex-col w-[98%] mx-2 my-1 rounded-sm border border-gray-500 border-solid bg-gray-800">
       {/** 点击展开详情 */}
       <div className="flex flex-row justify-start items-end hover:bg-gray-700 cursor-pointer px-2 sticky top-0 z-10 bg-gray-800" onClick={handleDetailToggle}>
         <div className=""> &gt; </div>

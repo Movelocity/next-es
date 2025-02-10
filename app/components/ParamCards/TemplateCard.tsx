@@ -72,12 +72,11 @@ const TemplateCard: React.FC<TemplateCardState> = ({ id, title, templateStr, onE
   };
 
   return (
-    <div className='w-full border border-solid border-zinc-600 bg-zinc-800 rounded-md m-1 px-2 text-white'>
+    <div className='w-[98%] border border-solid border-zinc-600 bg-zinc-800 rounded-sm px-2 text-white'>
       <div className='flex flex-row items-center justify-between'>
         <div className='font-bold'>{title}</div>
         <div className="flex flex-row">
           <button onClick={()=>onEdit(id)} className="px-2 hover:bg-zinc-600 bg-zinc-700 rounded-sm cursor-pointer text-sm">Edit</button>
-          {/* <button onClick={()=>onDelete(id)} className="px-2 hover:bg-zinc-600 bg-zinc-700 rounded-sm cursor-pointer text-sm ml-2">Del</button> */}
           <button onClick={handleRun} className="px-2 hover:bg-sky-600 bg-sky-700 rounded-sm cursor-pointer text-sm ml-2">Run</button>
         </div>
       </div>
@@ -93,10 +92,10 @@ const TemplateCard: React.FC<TemplateCardState> = ({ id, title, templateStr, onE
             }} 
           />
         ))}
-        {/* <KeyValuePairGroup pairs={kvMap} onUpdate={(newPairs) => setKvMap(newPairs)}/> */}
       </div>
     </div>
   );
+
 };
 
 export default TemplateCard;
