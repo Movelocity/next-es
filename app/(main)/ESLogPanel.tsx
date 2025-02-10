@@ -14,20 +14,18 @@ import { consolas_font } from '@/utils/cm_helper'
 
 import { parseEsLog } from '@/utils/json_filter'
 import RecordList from '@/components/Records'
-import QueryCards from '@/components/QueryCards'
+import QueryCards from '@/components/ParamCards/QueryCards'
 import { run_query } from '@/utils/api'
 
 import { useESLogStore, useStore } from '@/utils/store'
 import { parseReqCtx } from '@/utils/text_process'
-import OptionGroup from '@/components/_partial/OptionGroup'
+import OptionGroup from '@/components/OptionGroup'
 // import InputButton from '@/components/_partial/InputButton'
 
 const filterValue = `param,createTime,message`
 
 const getRecords = (searchRes:string, value_filter: string) => {
   try{
-    // console.log("searchRes: ", searchRes)
-    // console.log('value_filter: ', value_filter)
     let hits = JSON.parse(searchRes).hits
     // console.log('hits: ', hits)
     if(!hits.length || hits.length==0) {  // 没有就过滤后再检测

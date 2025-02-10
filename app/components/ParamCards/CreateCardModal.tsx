@@ -1,5 +1,5 @@
 import React, {useState} from 'react'
-import ScreenModal from './ScreenModal'
+import ScreenModal from '@/components/common/ScreenModal'
 import CodeMirror from '@uiw/react-codemirror'
 // import { useESLogStore, useStore } from '@/utils/store'
 import { json } from '@codemirror/lang-json'

@@ -1,4 +1,4 @@
-import ButtonGroup from '@/components/_partial/ButtonGroup'
+import ButtonGroup from '@/components/ParamCards/ButtonGroup'
 
 type QueryField = {
   cond_type: 'should' | 'must'

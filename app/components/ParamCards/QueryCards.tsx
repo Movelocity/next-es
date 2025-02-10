@@ -1,24 +1,15 @@
 import React, { useState, useRef, useEffect, memo } from 'react'
 import { useESLogStore, useStore } from '@/utils/store'
-import CreateCardModal from '@/components/CreateCardModal'
-// import QueryCard, {sample4, sample5} from './_partial/QueryCard'
-import TemplateCard from '@/components/_partial/TemplateCard'
+import CreateCardModal from '@/components/ParamCards/CreateCardModal'
+import TemplateCard from '@/components/ParamCards/TemplateCard'
 import { titleTemplate, queryTemplate } from '@/utils/examples'
-import {KeyValuePairGroup} from './_partial/KeyValuePair';
+import {KeyValuePairGroup} from './KeyValuePair';
 
 type QueryCardState = {
   id: number
   title: string
   templateStr: string
 }
-
-// const sampleQueryCards: QueryCardState[] = [
-//   {
-//     id: 0,
-//     title: titleTemplate,
-//     templateStr: queryTemplate,
-//   }
-// ]
 
 const QueryCards = () => {
   const eslogStore = useESLogStore()
