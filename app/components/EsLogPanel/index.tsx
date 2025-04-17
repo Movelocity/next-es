@@ -2,6 +2,7 @@
 import React, {useState, useRef, useEffect} from 'react'
 import CodeMirror from '@uiw/react-codemirror'
 import { useSW } from '@/utils/sw'
+import '@/utils/clearServiceWorkers' // Import to make it available globally
 import { EditorView, keymap } from '@codemirror/view'
 import { Prec } from '@codemirror/state'
 
@@ -33,7 +34,7 @@ const ESLogPanel = () => {
   const searchRes = useStore(state => state.searchRes)
 
   const left_line_number = useRef(0)
-  
+
   const { leftEditorWidth, rightEditorWidth, setLeftRatio } = useRatio()
 
   const doReqeust = async () => {
@@ -73,8 +74,8 @@ const ESLogPanel = () => {
   return (
     <div className="h-[100vh] w-full flex flex-row">
       <OptionGroup defaultOption={'Cards'} options={['Raw', 'Cards', 'Config']} width={leftEditorWidth}>
-        <CodeMirror 
-          value={searchReq} 
+        <CodeMirror
+          value={searchReq}
           height={px(windowHeight-24)}
           extensions={[json(), dracula, consolas_font, keyBinding]}
           onChange={setSearchReq}
@@ -95,7 +96,7 @@ const ESLogPanel = () => {
       <DragBar className="w-3" updateDrag={setLeftRatio}/>
 
       <OptionGroup options={['Raw', 'List']} width={rightEditorWidth}>
-        <CodeMirror 
+        <CodeMirror
           value={searchRes}
           readOnly
           width='100%'

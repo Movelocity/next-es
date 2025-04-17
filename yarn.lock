@@ -3337,6 +3337,11 @@ w3c-keyname@^2.2.4:
   resolved "https://registry.npmmirror.com/w3c-keyname/-/w3c-keyname-2.2.8.tgz#7b17c8c6883d4e8b86ac8aba79d39e880f8869c5"
   integrity sha512-dpojBhNsCNN7T82Tm7k26A6G9ML3NkhDsnw9n/eoxSRlVBB4CEtIQ/KTCLI2Fwf3ataSXRhYFkQi3SlnFwPvPQ==
 
+webpack-remove-serviceworker-plugin@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.npmmirror.com/webpack-remove-serviceworker-plugin/-/webpack-remove-serviceworker-plugin-1.0.0.tgz#63a7604da9a7fd9bae8f9eef87d274a2470dcaa7"
+  integrity sha512-oGgVwLOA4Wtf6RttNRzGFtsiDl6FHPBNuu81+y08pw5drdN8c9dsx6+hQDxoRWCbIM0BHrv/l8VgO0N0VYVpUA==
+
 which-boxed-primitive@^1.0.2:
   version "1.0.2"
   resolved "https://registry.npmmirror.com/which-boxed-primitive/-/which-boxed-primitive-1.0.2.tgz#13757bc89b209b049fe5d86430e21cf40a89a8e6"
