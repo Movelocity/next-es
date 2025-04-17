@@ -124,7 +124,7 @@ const Config = () => {
           <button
             className="px-3 h-8 bg-red-900 hover:bg-red-800 rounded-sm text-sm"
             onClick={() => {
-              if (confirm('This will clear all service workers and reload the page. Continue?')) {
+              if (confirm("This will clear all service workers and reload the page. Continue?")) {
                 clearAllServiceWorkers();
               }
             }}
@@ -132,7 +132,7 @@ const Config = () => {
             Clear Service Workers
           </button>
         </div>
-        <p className="text-xs text-neutral-400 mt-1">Use this if you're having issues with page updates during development</p>
+        <p className="text-xs text-neutral-400 mt-1">Use this if you are having issues with page updates during development</p>
       </div>
     </div>
   )
