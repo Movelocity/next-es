@@ -1,5 +1,5 @@
 'use client'
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import RecordItem, { RecordItemData } from '@/components/SearchResults/RecordItem'
 import { parseEsLog } from '@/utils/json_filter'
 import { useStore } from '@/components/EsLogPanel/store'
@@ -26,8 +26,14 @@ const getRecords = (searchRes:string, value_filter: string) => {
 
 const RecordList: React.FC<RecordListProps> = ({ searchRes }) => {
   const valueFilter = useStore(state => state.valueFilter)
+  const [records, setRecords] = useState<RecordItemData[]>([])
 
-  const records = getRecords(searchRes, valueFilter)
+  // Update records whenever searchRes or valueFilter changes
+  useEffect(() => {
+    const newRecords = getRecords(searchRes, valueFilter)
+    setRecords(newRecords)
+  }, [searchRes, valueFilter])
+
   return (
     <div className="flex-1 flex flex-col justify-start w-full overflow-y-scroll h-[calc(100vh-24px)] custom-scroll bg-zinc-900">
       {records.map((record: RecordItemData, index: number) => (
