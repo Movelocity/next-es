@@ -2,7 +2,7 @@ import React from 'react'
 import cn from 'classnames'
 import './style.css'
 
-type ModalProps = {
+interface ModalProps {
   show: boolean
   stayBackground?: boolean
   classNames?: string

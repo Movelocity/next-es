@@ -3,7 +3,7 @@ import ScreenModal from '@/components/common/ScreenModal'
 import CodeMirror from '@uiw/react-codemirror'
 import { json } from '@codemirror/lang-json'
 import { dracula } from '@uiw/codemirror-theme-dracula'
-import { consolas_font } from '@/utils/cm_helper'
+import { consolas_font } from '@/utils/codemirror'
 
 interface CardModalProps {
   title: string

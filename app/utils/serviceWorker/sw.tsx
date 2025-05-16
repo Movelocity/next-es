@@ -1,6 +1,6 @@
 'use client'
 import { useEffect } from 'react';
-import * as serviceWorkerRegistration from './swRegistration';
+import { register, unregister } from './swRegistration';
 
 /**
  * Hook to manage service worker registration and unregistration
@@ -12,12 +12,12 @@ export function useSW() {
   useEffect(() => {
     // In development mode, the register function will automatically skip registration
     // In production mode, it will register the service worker
-    serviceWorkerRegistration.register();
+    register();
 
     // Always unregister service workers in development mode on mount
     // to ensure we don't have stale service workers from previous runs
     if (process.env.NODE_ENV === 'development') {
-      serviceWorkerRegistration.unregister();
+      unregister();
     }
 
     // Cleanup function when component unmounts

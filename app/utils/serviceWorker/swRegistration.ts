@@ -101,3 +101,12 @@ export function clearCachesAndServiceWorkers() {
     });
   }
 }
+
+
+export const clearAllServiceWorkers = clearCachesAndServiceWorkers;
+
+// Make it available globally for easy access from the browser console
+if (typeof window !== 'undefined') {
+  (window as any).clearAllServiceWorkers = clearAllServiceWorkers;
+  console.log('Service worker utilities loaded. Use clearAllServiceWorkers() to clear service workers and caches.');
+}

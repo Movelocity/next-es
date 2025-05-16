@@ -1,15 +1,15 @@
 'use client'
 import React, {useState, useRef, useEffect} from 'react'
 import CodeMirror from '@uiw/react-codemirror'
-import { useSW } from '@/utils/sw'
-import '@/utils/clearServiceWorkers' // Import to make it available globally
+import { useSW } from '@/utils/serviceWorker/sw'
+import '@/utils/serviceWorker/swRegistration' // Import to make it available globally
 import { EditorView, keymap } from '@codemirror/view'
 import { Prec } from '@codemirror/state'
 
 import DragBar from '@/components/DragBar'
 import { json } from '@codemirror/lang-json'
 import { dracula } from '@uiw/codemirror-theme-dracula'
-import { consolas_font } from '@/utils/cm_helper'
+import { consolas_font } from '@/utils/codemirror'
 
 import RecordList from '@/components/SearchResults/Records'
 import QueryCards from '@/components/ParamCards/QueryCards'

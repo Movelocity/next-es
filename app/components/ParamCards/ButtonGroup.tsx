@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import cn from 'classnames'
-type ButtonGroupProps = {
+
+interface ButtonGroupProps {
   options: { label: string; value: string }[];
   onSelect: (value: string) => void;
 };

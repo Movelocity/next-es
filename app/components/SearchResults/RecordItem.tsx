@@ -3,7 +3,7 @@ import CodeMirror from '@uiw/react-codemirror'
 import { json } from '@codemirror/lang-json'
 import { dracula } from '@uiw/codemirror-theme-dracula'
 import { EditorView, keymap } from '@codemirror/view'
-import { consolas_font } from '@/utils/cm_helper'
+import { consolas_font } from '@/utils/codemirror'
 import { Prec } from '@codemirror/state'
 
 export interface RecordItemData {

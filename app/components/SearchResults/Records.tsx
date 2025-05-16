@@ -1,7 +1,7 @@
 'use client'
 import React, { useState, useEffect } from 'react'
 import RecordItem, { RecordItemData } from '@/components/SearchResults/RecordItem'
-import { parseEsLog } from '@/utils/json_filter'
+import { parseEsLog } from '@/utils/text_process'
 import { useStore } from '@/components/EsLogPanel/store'
 interface RecordListProps {
   searchRes: string

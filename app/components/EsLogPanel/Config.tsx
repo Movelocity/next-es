@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react'
 import { useESLogStore, useStore } from './store'
-import { parseEsLog } from '@/utils/json_filter'
-import { clearAllServiceWorkers } from '@/utils/clearServiceWorkers'
+import { parseEsLog } from '@/utils/text_process'
+import { clearAllServiceWorkers } from '@/utils/serviceWorker/swRegistration'
 
 const Config = () => {
   const eslogStore = useESLogStore()
