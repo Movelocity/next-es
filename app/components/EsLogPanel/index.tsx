@@ -15,7 +15,7 @@ import RecordList from '@/components/SearchResults/Records'
 import QueryCards from '@/components/ParamCards/QueryCards'
 import { run_query } from '@/utils/service'
 
-import { useESLogStore, useStore } from './store'
+import { useESLogStore } from './store'
 import { parseReqCtx } from '@/utils/text_process'
 import OptionGroup from '@/components/OptionGroup'
 import { useRatio } from './useRatio'
@@ -25,13 +25,7 @@ const px = (n: number) => `${n}px`
 
 const ESLogPanel = () => {
   useSW()
-  const eslogStore = useESLogStore()
-
-
-  const { setSearchReq, setSearchRes } = eslogStore.getState()
-  const { storeSearchReq, storeSearchRes} = eslogStore.getState()
-  const searchReq = useStore(state => state.searchReq)
-  const searchRes = useStore(state => state.searchRes)
+  const { setSearchReq, setSearchRes, storeSearchReq, storeSearchRes, searchReq, searchRes } = useESLogStore()
 
   const left_line_number = useRef(0)
 

@@ -14,8 +14,7 @@ type TemplateCardState = {
 };
 
 const TemplateCard: React.FC<TemplateCardState> = ({ id, title, templateStr, onEdit }) => {
-  const eslogStore = useESLogStore()
-  const { setSearchRes, storeSearchRes } = eslogStore.getState()
+  const { setSearchRes, storeSearchRes, gSearchParams } = useESLogStore()
 
   const [kvMap, setKvMap] = useState<{ [key: string]: string }>({});
   
@@ -48,7 +47,6 @@ const TemplateCard: React.FC<TemplateCardState> = ({ id, title, templateStr, onE
 
   // Function to handle run button click
   const handleRun = async () => {
-    const { gSearchParams } = eslogStore.getState()
     console.log(gSearchParams)
     let finalTemplate = templateStr;
     Object.entries(kvMap).forEach(([key, value]) => {

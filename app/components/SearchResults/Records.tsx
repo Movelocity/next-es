@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react'
 import RecordItem, { RecordItemData } from '@/components/SearchResults/RecordItem'
 import { parseEsLog } from '@/utils/text_process'
-import { useStore } from '@/components/EsLogPanel/store'
+import { useESLogStore } from '@/components/EsLogPanel/store'
 interface RecordListProps {
   searchRes: string
 }
@@ -25,7 +25,7 @@ const getRecords = (searchRes:string, value_filter: string) => {
 }
 
 const RecordList: React.FC<RecordListProps> = ({ searchRes }) => {
-  const valueFilter = useStore(state => state.valueFilter)
+  const { valueFilter } = useESLogStore()
   const [records, setRecords] = useState<RecordItemData[]>([])
 
   // Update records whenever searchRes or valueFilter changes

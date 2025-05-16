@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react'
-import { useESLogStore, useStore } from '@/components/EsLogPanel/store'
+import { useESLogStore } from '@/components/EsLogPanel/store'
 import CreateCardModal from '@/components/ParamCards/CardModal'
 import TemplateCard from '@/components/ParamCards/TemplateCard'
 import { titleTemplate, queryTemplate } from '@/utils/examples'
@@ -21,9 +21,7 @@ const findAvailableId = (cards: QueryCardState[]) => {
 }
 
 const QueryCards = () => {
-  const eslogStore = useESLogStore()
-  const { queryCardsStr, storeQueryCardsStr, setGlobalSearchParams, storeGlobalSearchParams } = eslogStore.getState()
-  const gSearchParams = useStore(state => state.gSearchParams)
+  const { queryCardsStr, storeQueryCardsStr, setGlobalSearchParams, storeGlobalSearchParams, gSearchParams } = useESLogStore()
   const [ showEditorModal, setShowEditorModal ] = useState(false)
   const [ queryCards, setQueryCards ] = useState<QueryCardState[]>([])
   const editingCardId = useRef(-1);

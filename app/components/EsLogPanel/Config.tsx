@@ -1,12 +1,10 @@
 import React, { useRef, useState } from 'react'
-import { useESLogStore, useStore } from './store'
+import { useESLogStore } from './store'
 import { parseEsLog } from '@/utils/text_process'
 import { clearAllServiceWorkers } from '@/utils/serviceWorker/swRegistration'
 
 const Config = () => {
-  const eslogStore = useESLogStore()
-  const { valueFilter, setSearchRes, storeQueryCardsStr, storeGlobalSearchParams, setValueFilter } = eslogStore.getState()
-  const searchRes = useStore(state => state.searchRes)
+  const { searchRes, valueFilter, setSearchRes, storeQueryCardsStr, storeGlobalSearchParams, setValueFilter } = useESLogStore();
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [valueFilterEdit, setValueFilterEdit] = useState(valueFilter)
   const handleExport = () => {
