@@ -93,13 +93,13 @@ const Config = () => {
       </div>
 
       <div className="flex flex-col gap-2">
-        <h3 className="text-sm font-medium text-neutral-300">Configuration Management</h3>
+        <h3 className="text-sm font-medium text-neutral-300">配置管理</h3>
         <div className="flex flex-row gap-2">
           <button
             className="px-3 h-8 bg-zinc-800 hover:bg-zinc-700 rounded-sm text-sm"
             onClick={handleExport}
           >
-            Export Config
+            导出配置
           </button>
           <input
             type="file"
@@ -112,14 +112,16 @@ const Config = () => {
             className="px-3 h-8 bg-zinc-800 hover:bg-zinc-700 rounded-sm text-sm"
             onClick={() => fileInputRef.current?.click()}
           >
-            Import Config
+            导入配置
           </button>
         </div>
-        <p className="text-xs text-neutral-400 mt-1">Exports/imports both query cards and global parameters</p>
+        <p className="text-xs text-neutral-400 mt-1">
+          导出/导入当前工作区的查询语句和全局参数
+        </p>
       </div>
 
       <div className="flex flex-col gap-2">
-        <h3 className="text-sm font-medium text-neutral-300">Development Tools</h3>
+        <h3 className="text-sm font-medium text-neutral-300">开发工具</h3>
         <div className="flex flex-row gap-2">
           <button
             className="px-3 h-8 bg-red-900 hover:bg-red-800 rounded-sm text-sm"
@@ -129,10 +131,10 @@ const Config = () => {
               }
             }}
           >
-            Clear Service Workers
+            清除 Service Worker 缓存
           </button>
         </div>
-        <p className="text-xs text-neutral-400 mt-1">Use this if you are having issues with page updates during development</p>
+        <p className="text-xs text-neutral-400 mt-1">代码更新后页面索引无法更新时使用</p>
       </div>
     </div>
   )

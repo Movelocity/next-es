@@ -11,6 +11,15 @@ type QueryCardState = {
   templateStr: string
 }
 
+/** 找到一个可用的id，不与已有的id重复 */
+const findAvailableId = (cards: QueryCardState[]) => {
+  const ids = cards.map(card => card.id)
+  for(let i=0; i<=cards.length; i++){
+    if(!ids.includes(i)) return i
+  }
+  return cards.length
+}
+
 const QueryCards = () => {
   const eslogStore = useESLogStore()
   const { queryCardsStr, storeQueryCardsStr, setGlobalSearchParams, storeGlobalSearchParams } = eslogStore.getState()
@@ -87,7 +96,7 @@ const QueryCards = () => {
                 if(title && content){
                   if(editingCardId.current === -1) {
                     setQueryCards((oldCards)=> 
-                      [...oldCards, {id: oldCards.length, title:title, templateStr:content}])
+                      [...oldCards, {id: findAvailableId(oldCards), title:title, templateStr:content}])
                   } else {
                     setQueryCards((oldCards)=> 
                       oldCards.map(card=> card.id === editingCardId.current ? {...card, title:title, templateStr:content} : card))
@@ -96,7 +105,7 @@ const QueryCards = () => {
               }} 
               onSaveAsNew={(title, content)=>{
                 setQueryCards((oldCards)=> 
-                  [...oldCards, {id: oldCards.length, title:title, templateStr:content}])
+                  [...oldCards, {id: findAvailableId(oldCards), title:title, templateStr:content}])
               }}
               onDelete={()=>{
                 if(editingCardId.current === -1) return
