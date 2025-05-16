@@ -38,8 +38,7 @@ const ScreenModal: React.FC<ModalProps> = ({
           onClick={handleBackgroundClick}
         >
           <div
-            className={cn('relative flex flex-col items-center w-fit p-2', classNames)}
-            style={{ maxWidth: '80vw', maxHeight: '80vh' }}
+            className={cn('relative flex flex-col items-center w-fit p-2 max-w-[90vw] max-h-[90vh]', classNames)}
           >
             {children}
           </div>

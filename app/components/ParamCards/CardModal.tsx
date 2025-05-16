@@ -4,6 +4,7 @@ import CodeMirror from '@uiw/react-codemirror'
 import { json } from '@codemirror/lang-json'
 import { dracula } from '@uiw/codemirror-theme-dracula'
 import { consolas_font } from '@/utils/codemirror'
+import Button from '@/components/ui/button'
 
 interface CardModalProps {
   title: string
@@ -44,14 +45,15 @@ const CardModal: React.FC<CardModalProps> = ({title, content, onSave, onDelete, 
       show={true}
       closeOnBgClick={false}
       closeModal={closeModal}
-      classNames='bg-zinc-800 border border-neutral-800 border-solid rounded-xl'
+      classNames='bg-zinc-800/95 border border-neutral-600 border-solid rounded-xl shadow-lg backdrop-blur-sm'
     >
-      <div className='w-[600px] flex flex-col space-y-1 p-1'>
+      <div className='w-[900px] flex flex-col space-y-2 p-3'>
         {/* Title Input Section */}
-        <div className="flex items-center gap-1.5">
-          <span className="text-neutral-200">标题:</span>
+        <div className="flex items-center gap-2">
+          <span className="text-neutral-200 font-medium">标题:</span>
           <input 
-            className="flex-1 bg-zinc-700 px-2 py-0.5 rounded outline-none focus:ring-1 focus:ring-sky-500"
+            className="flex-1 bg-zinc-700/90 px-2.5 py-1 rounded-md outline-none border border-zinc-600/50 
+                       focus:ring-1 focus:ring-sky-500/70 focus:border-sky-500/50 transition-all duration-200"
             value={titleText}
             onChange={(e) => setTitleText(e.target.value)}
             spellCheck={false}
@@ -59,55 +61,48 @@ const CardModal: React.FC<CardModalProps> = ({title, content, onSave, onDelete, 
         </div>
         
         {/* Template Hint Section */}
-        <div className="text-xs text-neutral-400">
-          <span>[ ES请求模板 ]</span>
-          <span className="text-green-500 ml-1">{'{%xxx%}'}</span>
+        <div className="text-xs text-neutral-400 bg-zinc-700/30 rounded-md px-2.5 py-1.5">
+          <span className="font-medium">[ ES请求模板 ]</span>
+          <span className="text-green-400 ml-2 font-mono">{'{%xxx%}'}</span>
           <span className="ml-1">配置变量</span>
-          <span className="text-sky-500 ml-1">{'{%xxx=value%}'}</span>
+          <span className="text-sky-400 ml-2 font-mono">{'{%xxx=value%}'}</span>
           <span className="ml-1">配置默认值</span>
-          <span className="text-pink-500 ml-1">{'{%$xxx%}'}</span>
+          <span className="text-pink-400 ml-2 font-mono">{'{%$xxx%}'}</span>
           <span className="ml-1">使用全局变量</span>
         </div>
 
         {/* CodeMirror Editor */}
-        <CodeMirror 
-          value={contentText} 
-          height="350px"
-          extensions={[json(), dracula, consolas_font]}
-          onChange={setContentText}
-          theme='dark'
-          className='w-full rounded overflow-hidden'
-        />
+        <div className="rounded-lg overflow-hidden border border-zinc-700/50">
+          <CodeMirror 
+            value={contentText} 
+            height="450px"
+            maxHeight="60vh"
+            extensions={[json(), dracula, consolas_font]}
+            onChange={setContentText}
+            theme='dark'
+            className='w-full'
+          />
+        </div>
 
         {/* Action Buttons */}
-        <div className="flex justify-end gap-1.5 pt-1.5">
-          <button 
+        <div className="flex justify-center gap-3 pt-1">
+          <Button 
             onClick={handleSave}
-            className="px-1 bg-sky-700 hover:bg-sky-600 rounded transition-colors"
-          >
-            保存
-          </button>
-          
-          <button 
+            text="保存"
+          />
+          <Button 
             onClick={handleSaveAsNew}
-            className="px-1 bg-sky-700 hover:bg-sky-600 rounded transition-colors"
-          >
-            另存为新模板
-          </button>
-
-          <button 
+            text="另存为新模板"
+          />
+          <Button 
             onClick={handleDelete}
-            className="px-1 bg-zinc-700 hover:bg-zinc-600 rounded transition-colors"
-          >
-            删除
-          </button>
-          
-          <button 
+            text="删除"
+            type="danger"
+          />
+          <Button 
             onClick={handleCancel}
-            className="px-3 bg-zinc-700 hover:bg-zinc-600 rounded transition-colors"
-          >
-            取消
-          </button>
+            text="取消"
+          />
         </div>
       </div>
     </ScreenModal>

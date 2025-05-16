@@ -6,7 +6,7 @@ import '@/utils/serviceWorker/swRegistration' // Import to make it available glo
 import { EditorView, keymap } from '@codemirror/view'
 import { Prec } from '@codemirror/state'
 
-import DragBar from '@/components/DragBar'
+import DragBar from '@/components/ui/DragBar'
 import { json } from '@codemirror/lang-json'
 import { dracula } from '@uiw/codemirror-theme-dracula'
 import { consolas_font } from '@/utils/codemirror'

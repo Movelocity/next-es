@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { useESLogStore } from '@/components/EsLogPanel/store'
-import CreateCardModal from '@/components/ParamCards/CardModal'
+import CardModal from '@/components/ParamCards/CardModal'
 import TemplateCard from '@/components/ParamCards/TemplateCard'
 import { titleTemplate, queryTemplate } from '@/utils/examples'
 import {KeyValuePairGroup} from './KeyValuePair';
@@ -86,7 +86,7 @@ const QueryCards = () => {
           >+</div>
 
           { showEditorModal && 
-            <CreateCardModal 
+            <CardModal 
               title={editTitle.current} 
               content={editTemplate.current} 
               closeModal={()=>setShowEditorModal(false)}
