@@ -1,5 +1,5 @@
 'use client'
-import React, { useState, useCallback, useRef, memo } from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 
 interface KeyValuePairProps {
   key_name: string;

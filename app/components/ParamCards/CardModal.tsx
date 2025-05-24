@@ -45,7 +45,7 @@ const CardModal: React.FC<CardModalProps> = ({title, content, onSave, onDelete, 
       show={true}
       closeOnBgClick={false}
       closeModal={closeModal}
-      classNames='bg-zinc-800/95 border border-neutral-600 border-solid rounded-xl shadow-lg backdrop-blur-sm'
+      classNames='bg-zinc-900 border border-zinc-700 border-solid rounded-xl shadow-lg backdrop-blur-sm'
     >
       <div className='w-[900px] flex flex-col space-y-2 p-3'>
         {/* Title Input Section */}
@@ -85,14 +85,14 @@ const CardModal: React.FC<CardModalProps> = ({title, content, onSave, onDelete, 
         </div>
 
         {/* Action Buttons */}
-        <div className="flex justify-center gap-3 pt-1">
+        <div className="flex justify-center gap-2 pt-1">
           <Button 
             onClick={handleSave}
             text="保存"
           />
           <Button 
             onClick={handleSaveAsNew}
-            text="另存为新模板"
+            text="另存"
           />
           <Button 
             onClick={handleDelete}
@@ -102,6 +102,7 @@ const CardModal: React.FC<CardModalProps> = ({title, content, onSave, onDelete, 
           <Button 
             onClick={handleCancel}
             text="取消"
+            type="secondary"
           />
         </div>
       </div>
