@@ -127,7 +127,7 @@ const Config = () => {
           </button>
         </div>
         <p className="text-xs text-neutral-400 mt-1">
-          导出/导入当前工作区 "{currentWorkspace}" 的查询语句和全局参数
+          导出/导入当前工作区 &quot;{currentWorkspace}&quot; 的查询语句和全局参数
         </p>
       </div>
 
