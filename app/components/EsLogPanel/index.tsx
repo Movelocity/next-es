@@ -20,6 +20,7 @@ import { parseReqCtx } from '@/utils/text_process'
 import OptionGroup from '@/components/OptionGroup'
 import { useRatio } from './useRatio'
 import Config from './Config'
+import WorkspaceSelector from '@/components/workspace/WorkspaceSelector'
 
 const px = (n: number) => `${n}px`
 
@@ -67,7 +68,7 @@ const ESLogPanel = () => {
 
   return (
     <div className="h-[100vh] w-full flex flex-row">
-      <OptionGroup defaultOption={'Cards'} options={['Raw', 'Cards', 'Config']} width={leftEditorWidth}>
+      <OptionGroup defaultOption={'Cards'} options={['Raw', 'Cards', 'Config']} width={leftEditorWidth} extra={<WorkspaceSelector/>}>
         <CodeMirror
           value={searchReq}
           height={px(windowHeight-24)}

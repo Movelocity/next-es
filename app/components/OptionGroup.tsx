@@ -5,6 +5,7 @@ type OptionGroupProps = {
   options: string[];
   onSelect?: (value: string) => void;
   children?: React.ReactNode[];
+  extra?: React.ReactNode;
   className?: string;
   width?: string;
 };
@@ -19,9 +20,10 @@ type OptionGroupProps = {
  *   <div>Raw</div>
  *   <div>Cards</div>
  *   <div>Config</div>
+ *   {extra}
  * </OptionGroup>
  */
-const OptionGroup: React.FC<OptionGroupProps> = ({ defaultOption, options, onSelect, children, className, width }) => {
+const OptionGroup: React.FC<OptionGroupProps> = ({ defaultOption, options, onSelect, children, className, width, extra }) => {
   const [selectedValue, setSelectedValue] = useState(defaultOption||options[0]);
 
   const handleClick = (value:string) => {
@@ -31,16 +33,23 @@ const OptionGroup: React.FC<OptionGroupProps> = ({ defaultOption, options, onSel
 
   return (
     <div className={cn("flex flex-col w-full", className)} style={{width: width}}>
-      <div className="flex flex-row">
-        {options.map((option) => (
-          <div
-            key={option}
-            className={`cursor-pointer px-2 rounded-t-sm hover:bg-slate-800 ${selectedValue === option ? 'bg-gray-700' : ''}`}
-            onClick={() => handleClick(option)}
-          >
-            {option}
+      <div className="flex flex-row justify-between">
+        <div className="flex-1 flex flex-row">
+          {options.map((option) => (
+            <div
+              key={option}
+              className={`cursor-pointer px-2 py-1 rounded-t-sm hover:bg-slate-800 ${selectedValue === option ? 'bg-gray-700' : ''}`}
+              onClick={() => handleClick(option)}
+            >
+              {option}
+            </div>
+          ))}
+        </div>
+        {extra && (
+          <div className="">
+            {extra}
           </div>
-        ))}
+        )}
       </div>
       {children && (
         <div className="flex-1">

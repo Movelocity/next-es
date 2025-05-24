@@ -2,11 +2,13 @@ import React, { useRef, useState } from 'react'
 import { useESLogStore } from './store'
 import { parseEsLog } from '@/utils/text_process'
 import { clearAllServiceWorkers } from '@/utils/serviceWorker/swRegistration'
+import WorkspaceManager from '@/components/workspace/WorkspaceManager'
 
 const Config = () => {
-  const { searchRes, valueFilter, setSearchRes, storeQueryCardsStr, storeGlobalSearchParams, setValueFilter } = useESLogStore();
+  const { searchRes, valueFilter, setSearchRes, storeQueryCardsStr, storeGlobalSearchParams, setValueFilter, currentWorkspace } = useESLogStore();
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [valueFilterEdit, setValueFilterEdit] = useState(valueFilter)
+  
   const handleExport = () => {
     const queryCardsStr = localStorage.getItem('eslog_queryCards') || '[]'
     const globalParamsStr = localStorage.getItem('eslog_globalParams') || '{}'
@@ -14,7 +16,8 @@ const Config = () => {
     // Create a combined data object
     const exportData = {
       queryCards: JSON.parse(queryCardsStr),
-      globalParams: JSON.parse(globalParamsStr)
+      globalParams: JSON.parse(globalParamsStr),
+      workspace: currentWorkspace
     }
 
     const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' })
@@ -22,7 +25,7 @@ const Config = () => {
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url
-    a.download = 'eslog_config.json'
+    a.download = `eslog_config_${currentWorkspace}.json`
     document.body.appendChild(a)
     a.click()
     document.body.removeChild(a)
@@ -48,34 +51,41 @@ const Config = () => {
           // Import global params
           storeGlobalSearchParams(importedData.globalParams)
 
-          alert('Successfully imported configuration')
+          const workspaceInfo = importedData.workspace ? ` (来自工作区: ${importedData.workspace})` : ''
+          alert(`成功导入配置到当前工作区 "${currentWorkspace}"${workspaceInfo}`)
         }
         // Check if it's the old format (just query cards)
         else if (Array.isArray(importedData)) {
           storeQueryCardsStr(content)
-          alert('Successfully imported query cards')
+          alert('成功导入查询卡片')
         }
         else {
-          alert('Invalid configuration file format')
+          alert('无效的配置文件格式')
         }
       } catch (error) {
         console.error('Invalid JSON file:', error)
-        alert('Invalid JSON file format')
+        alert('无效的 JSON 文件格式')
       }
     }
     reader.readAsText(file)
   }
 
   return (
-    <div className="w-full h-full p-4 flex flex-col gap-4">
+    <div className="w-full h-full p-4 flex flex-col gap-4 overflow-y-auto">
+      {/* 工作区管理 */}
       <div className="flex flex-col gap-2">
-        <h3 className="text-sm font-medium text-neutral-300">Value Filter</h3>
+        <WorkspaceManager />
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <h3 className="text-sm font-medium text-neutral-300">值过滤器</h3>
         <div className="flex flex-row justify-between items-center w-full gap-2">
           <input
             value={valueFilterEdit}
             onChange={(e) => setValueFilterEdit(e.target.value)}
             className="flex-1 bg-zinc-800 text-white pl-2 font-mono text-sm rounded-sm h-8 outline-none"
             spellCheck="false"
+            placeholder="param,createTime,message"
           />
 
           <button
@@ -85,9 +95,12 @@ const Config = () => {
               setSearchRes(parseEsLog(searchRes, valueFilterEdit))
             }}
           >
-            Filter
+            应用
           </button>
         </div>
+        <p className="text-xs text-neutral-400 mt-1">
+          指定要显示的字段，用逗号分隔
+        </p>
       </div>
 
       <div className="flex flex-col gap-2">
@@ -114,7 +127,7 @@ const Config = () => {
           </button>
         </div>
         <p className="text-xs text-neutral-400 mt-1">
-          导出/导入当前工作区的查询语句和全局参数
+          导出/导入当前工作区 "{currentWorkspace}" 的查询语句和全局参数
         </p>
       </div>
 
@@ -124,7 +137,7 @@ const Config = () => {
           <button
             className="px-3 h-8 bg-red-900 hover:bg-red-800 rounded-sm text-sm"
             onClick={() => {
-              if (confirm("This will clear all service workers and reload the page. Continue?")) {
+              if (confirm("这将清除所有 Service Worker 缓存并重新加载页面。是否继续？")) {
                 clearAllServiceWorkers();
               }
             }}
