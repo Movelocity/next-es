@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { query_value1, result_value1 } from '@/utils/examples'
-import { getWorkspaceData, saveWorkspaceData, migrateLocalStorageToWorkspace, type WorkspaceData } from '@/utils/workspace'
+import { getWorkspaceData, saveWorkspaceData, type WorkspaceData } from '@/utils/workspace'
 
 type StoreStateValues = {
   searchReq: string
@@ -28,6 +28,7 @@ type WorkspaceState = {
   switchWorkspace: (workspaceName: string) => Promise<void>
   syncToServer: () => Promise<void>
   loadWorkspaceData: (workspaceName: string) => Promise<void>
+  enableWorkspaceSync: () => void
 }
 
 type RuntimeState = {
@@ -65,17 +66,12 @@ const loadFromLocalStorage: ()=>StoreStateValues = () => {
 };
 
 /**
- * 获取当前工作区名称
+ * 使用建议
+ * 如果你在控制台看到以下消息之一：
+ * Workspace 'xxx' not found on server, using local data without enabling sync
+ * Call enableWorkspaceSync() if you want to sync current local data to server
+ * 可以手动同步: useESLogStore.getState().enableWorkspaceSync()
  */
-const getCurrentWorkspace = (): string => {
-  // 在服务端或初始化时总是返回 'default' 避免SSR错误
-  if (typeof window === 'undefined' || typeof localStorage === 'undefined') {
-    return 'default'
-  }
-  return localStorage.getItem(S_CurrentWorkspace) || 'default'
-}
-
-
 export const useESLogStore = create<ESLogState>((set, get) => ({
     ...loadFromLocalStorage(),
     currentWorkspace: 'default', // 初始化时总是使用 'default' 避免 SSR 不匹配
@@ -121,6 +117,10 @@ export const useESLogStore = create<ESLogState>((set, get) => ({
     },
     setValueFilter: (valueFilter: string) => {
       set(() => ({ valueFilter }))
+      // 同步更新 localStorage
+      if (typeof localStorage !== 'undefined') {
+        localStorage.setItem(S_ValueFilter, valueFilter)
+      }
       // 异步同步到服务器
       setTimeout(() => get().syncToServer(), 100)
     },
@@ -168,20 +168,29 @@ export const useESLogStore = create<ESLogState>((set, get) => ({
             localStorage.setItem(S_QueryCard, data.queryCardsStr)
             localStorage.setItem(S_ValueFilter, data.valueFilter)
           }
+          console.log(`Loaded workspace '${workspaceName}' from server`)
         } else {
-          // 如果工作区数据不存在，则使用默认值
+          // 如果工作区数据不存在，不要立即设置workspaceDataLoaded为true
+          // 避免将本地默认数据推送到服务器覆盖可能存在的数据
           const defaultData = loadFromLocalStorage()
-          set({ ...defaultData, workspaceDataLoaded: true })
+          set({ ...defaultData })
+          console.log(`Workspace '${workspaceName}' not found on server, using local data without enabling sync`)
+          console.log('Call enableWorkspaceSync() if you want to sync current local data to server')
         }
       } catch (error) {
         console.error('Error loading workspace data:', error)
-        set({ workspaceDataLoaded: true })
+        // 出错时也不要设置workspaceDataLoaded为true，避免推送可能有问题的数据
+        console.log('Failed to load workspace data, sync disabled to prevent data loss')
+        console.log('Call enableWorkspaceSync() if you want to sync current local data to server')
       }
     },
 
     syncToServer: async () => {
       const state = get()
-      if (!state.workspaceDataLoaded) return
+      if (!state.workspaceDataLoaded) {
+        console.log('Sync skipped: workspace data not loaded')
+        return
+      }
 
       const data: WorkspaceData = {
         searchReq: state.searchReq,
@@ -192,6 +201,7 @@ export const useESLogStore = create<ESLogState>((set, get) => ({
 
       try {
         await saveWorkspaceData(state.currentWorkspace, data)
+        console.log(`Synced data to workspace '${state.currentWorkspace}'`)
       } catch (error) {
         console.error('Error syncing to server:', error)
       }
@@ -199,20 +209,10 @@ export const useESLogStore = create<ESLogState>((set, get) => ({
   
     showModal: false,
     setShowModal: showModal => set(() => ({ showModal })),
-}))
 
-// 初始化：迁移localStorage数据到默认工作区并加载当前工作区数据
-if (typeof window !== 'undefined') {
-  const store = useESLogStore.getState()
-  
-  // 设置正确的当前工作区（从 localStorage 读取）
-  const actualCurrentWorkspace = getCurrentWorkspace()
-  store.setCurrentWorkspace(actualCurrentWorkspace)
-  
-  // 如果是第一次使用工作区功能，先迁移数据
-  migrateLocalStorageToWorkspace().then(() => {
-    // 加载当前工作区的数据
-    store.loadWorkspaceData(actualCurrentWorkspace)
-  })
-}
+    enableWorkspaceSync: () => {
+      set({ workspaceDataLoaded: true })
+      console.log('Workspace sync enabled - future changes will be synced to server')
+    },
+}))
 

@@ -108,45 +108,45 @@ export async function deleteWorkspace(workspaceName: string): Promise<boolean> {
 }
 
 // 将localStorage数据迁移到默认工作区
-export async function migrateLocalStorageToWorkspace(): Promise<boolean> {
-  if (typeof localStorage === 'undefined') {
-    return false
-  }
+// export async function migrateLocalStorageToWorkspace(): Promise<boolean> {
+//   if (typeof localStorage === 'undefined') {
+//     return false
+//   }
 
-  const LOCAL_STORAGE_KEY = 'eslog'
-  const S_REQ = LOCAL_STORAGE_KEY + '_searchRequest'
-  const S_RES = LOCAL_STORAGE_KEY + '_searchResult'
-  const S_GParam = LOCAL_STORAGE_KEY + '_globalParams'
-  const S_QueryCard = LOCAL_STORAGE_KEY + '_queryCards'
-  const S_ValueFilter = LOCAL_STORAGE_KEY + '_valueFilter'
+//   const LOCAL_STORAGE_KEY = 'eslog'
+//   const S_REQ = LOCAL_STORAGE_KEY + '_searchRequest'
+//   const S_RES = LOCAL_STORAGE_KEY + '_searchResult'
+//   const S_GParam = LOCAL_STORAGE_KEY + '_globalParams'
+//   const S_QueryCard = LOCAL_STORAGE_KEY + '_queryCards'
+//   const S_ValueFilter = LOCAL_STORAGE_KEY + '_valueFilter'
 
-  try {
-    const s_gparam = localStorage.getItem(S_GParam)
+//   try {
+//     const s_gparam = localStorage.getItem(S_GParam)
     
-    const localData: WorkspaceData = {
-      searchReq: localStorage.getItem(S_REQ) || '',
-      gSearchParams: s_gparam ? JSON.parse(s_gparam) : {},
-      queryCardsStr: localStorage.getItem(S_QueryCard) || '[]',
-      valueFilter: localStorage.getItem(S_ValueFilter) || 'param,createTime,message',
-    }
+//     const localData: WorkspaceData = {
+//       searchReq: localStorage.getItem(S_REQ) || '',
+//       gSearchParams: s_gparam ? JSON.parse(s_gparam) : {},
+//       queryCardsStr: localStorage.getItem(S_QueryCard) || '[]',
+//       valueFilter: localStorage.getItem(S_ValueFilter) || 'param,createTime,message',
+//     }
 
-    // 只有在本地存储有数据时才迁移
-    const hasData = localData.searchReq || 
-                   Object.keys(localData.gSearchParams).length > 0 || 
-                   localData.queryCardsStr !== '[]' || 
-                   localData.valueFilter !== 'param,createTime,message'
+//     // 只有在本地存储有数据时才迁移
+//     const hasData = localData.searchReq || 
+//                    Object.keys(localData.gSearchParams).length > 0 || 
+//                    localData.queryCardsStr !== '[]' || 
+//                    localData.valueFilter !== 'param,createTime,message'
 
-    if (hasData) {
-      const success = await saveWorkspaceData('default', localData)
-      if (success) {
-        console.log('Successfully migrated localStorage data to default workspace')
-        return true
-      }
-    }
+//     if (hasData) {
+//       const success = await saveWorkspaceData('default', localData)
+//       if (success) {
+//         console.log('Successfully migrated localStorage data to default workspace')
+//         return true
+//       }
+//     }
     
-    return false
-  } catch (error) {
-    console.error('Error migrating localStorage to workspace:', error)
-    return false
-  }
-} 
+//     return false
+//   } catch (error) {
+//     console.error('Error migrating localStorage to workspace:', error)
+//     return false
+//   }
+// } 
