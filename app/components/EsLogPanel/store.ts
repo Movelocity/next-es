@@ -68,23 +68,17 @@ const loadFromLocalStorage: ()=>StoreStateValues = () => {
  * 获取当前工作区名称
  */
 const getCurrentWorkspace = (): string => {
-  if (typeof localStorage !== 'undefined') {
-    return localStorage.getItem(S_CurrentWorkspace) || 'default'
+  // 在服务端或初始化时总是返回 'default' 避免SSR错误
+  if (typeof window === 'undefined' || typeof localStorage === 'undefined') {
+    return 'default'
   }
-  return 'default'
+  return localStorage.getItem(S_CurrentWorkspace) || 'default'
 }
-
-/**
- * 以上五个状态可以使用工作区来管理，工作区切换时或最初加载时，从服务端获取这五个字段。useESLogStore 中这几个状态更新时，将更新推送给服务端
- * 服务端方法写在 app/api/workspace/route.ts 中
- * 工作区数据存储在 data/ 目录下，索引为 data/workspace.json,。具体工作区，比如 demo, 存储在 data/workspaces/demo/cards.json, data/workspaces/demo/valueFilter.json, ...
- * 以上功能实现后，将 localStorage中的数据推送到服务端的 default 工作区中
- */
 
 
 export const useESLogStore = create<ESLogState>((set, get) => ({
     ...loadFromLocalStorage(),
-    currentWorkspace: getCurrentWorkspace(),
+    currentWorkspace: 'default', // 初始化时总是使用 'default' 避免 SSR 不匹配
     workspaceDataLoaded: false,
 
     setSearchReq: searchReq => set(() => ({ searchReq })),
@@ -211,10 +205,14 @@ export const useESLogStore = create<ESLogState>((set, get) => ({
 if (typeof window !== 'undefined') {
   const store = useESLogStore.getState()
   
+  // 设置正确的当前工作区（从 localStorage 读取）
+  const actualCurrentWorkspace = getCurrentWorkspace()
+  store.setCurrentWorkspace(actualCurrentWorkspace)
+  
   // 如果是第一次使用工作区功能，先迁移数据
   migrateLocalStorageToWorkspace().then(() => {
     // 加载当前工作区的数据
-    store.loadWorkspaceData(store.currentWorkspace)
+    store.loadWorkspaceData(actualCurrentWorkspace)
   })
 }
 

@@ -12,6 +12,7 @@ export default function WorkspaceSelector({ className = '' }: WorkspaceSelectorP
   const [workspaces, setWorkspaces] = useState<Workspace[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
+  const [isHydrated, setIsHydrated] = useState(false)
 
   const { currentWorkspace, switchWorkspace } = useESLogStore()
 
@@ -27,6 +28,11 @@ export default function WorkspaceSelector({ className = '' }: WorkspaceSelectorP
 
   useEffect(() => {
     loadWorkspaces()
+  }, [])
+
+  // 标记组件已水合，避免 SSR 不匹配
+  useEffect(() => {
+    setIsHydrated(true)
   }, [])
 
   // 处理工作区切换
@@ -58,7 +64,7 @@ export default function WorkspaceSelector({ className = '' }: WorkspaceSelectorP
         className="flex items-center gap-2 p-1 disabled:opacity-50"
       >
         <span className="text-sm text-gray-200">工作区:</span>
-        <span className="font-medium text-white">{currentWorkspace}</span>
+        <span className="font-medium text-white">{isHydrated ? currentWorkspace : 'default'}</span>
         <svg
           className={`w-4 h-4 text-gray-300 transition-transform ${isOpen ? 'rotate-180' : ''}`}
           fill="none"
