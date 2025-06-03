@@ -63,10 +63,22 @@ async function getWorkspaceData(workspaceName: string): Promise<WorkspaceData | 
       fs.readFile(path.join(workspaceDir, 'queryCards.json'), 'utf-8').catch(() => '"[]"'),
       fs.readFile(path.join(workspaceDir, 'valueFilter.json'), 'utf-8').catch(() => '"param,createTime,message"'),
     ])
+    
+    // 处理默认参数
+    let gSearchParamsObj = {}
+    try{
+      gSearchParamsObj = JSON.parse(gSearchParams)
+      if(Object.keys(gSearchParamsObj).length === 0){
+        gSearchParamsObj = {"$开始时间":"2025-05-23 01:00:00","$结束时间":"2025-05-23 20:32:00"}
+      }
+    }catch(e){
+      gSearchParamsObj = {"$开始时间":"2025-05-23 01:00:00","$结束时间":"2025-05-23 20:32:00"}
+      console.error('gSearchParams is not a valid JSON string', e)
+    }
 
     return {
       searchReq: JSON.parse(searchReq),
-      gSearchParams: JSON.parse(gSearchParams),
+      gSearchParams: gSearchParamsObj,
       queryCardsStr: JSON.parse(queryCardsStr),
       valueFilter: JSON.parse(valueFilter),
     }

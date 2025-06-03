@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>离线模式 - ES Viewer</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+        
+        .container {
+            text-align: center;
+            max-width: 500px;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        .icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.8;
+        }
+        
+        h1 {
+            margin: 0 0 1rem 0;
+            font-size: 2rem;
+            font-weight: 300;
+        }
+        
+        p {
+            margin: 0 0 2rem 0;
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+        
+        .retry-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .retry-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: translateY(-2px);
+        }
+        
+        .status {
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="icon">📡</div>
+        <h1>网络连接中断</h1>
+        <p>
+            很抱歉，当前无法连接到服务器。<br>
+            请检查您的网络连接或稍后重试。
+        </p>
+        <button class="retry-btn" onclick="location.reload()">
+            重新连接
+        </button>
+        <div class="status" id="status">
+            正在尝试重新连接...
+        </div>
+    </div>
+
+    <script>
+        // 监听网络状态变化
+        function updateStatus() {
+            const status = document.getElementById('status');
+            if (navigator.onLine) {
+                status.textContent = '网络已连接，点击重新连接按钮';
+                status.style.color = '#4ade80';
+            } else {
+                status.textContent = '网络仍未连接，请检查网络设置';
+                status.style.color = '#fbbf24';
+            }
+        }
+        
+        // 初始状态检查
+        updateStatus();
+        
+        // 监听网络状态变化
+        window.addEventListener('online', updateStatus);
+        window.addEventListener('offline', updateStatus);
+        
+        // 定期检查连接
+        setInterval(() => {
+            fetch('/', { method: 'HEAD', cache: 'no-cache' })
+                .then(() => {
+                    document.getElementById('status').textContent = '服务器已可访问，点击重新连接';
+                    document.getElementById('status').style.color = '#4ade80';
+                })
+                .catch(() => {
+                    // 保持当前状态
+                });
+        }, 5000);
+    </script>
+</body>
+</html> 
