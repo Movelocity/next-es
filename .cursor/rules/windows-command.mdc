@@ -1,0 +1,32 @@
+---
+alwaysApply: true
+---
+
+命令运行时，PowerShell不支持 `&&` 操作符，需要使用PowerShell的分号`;`来分隔命令  
+
+## Windows中文路径处理规范（Windows 专用）  
+
+⚠️ **强制规范声明**：  
+- 本规范适用于当前 Windows 操作系统 PowerShell 环境  
+- 无需判断环境，本规范为强制执行规则  
+- 所有涉及中文路径的 Python 脚本执行命令必须严格遵守本规范    
+
+### 适用场景：  
+在 Windows PowerShell 中执行位于中文路径下的 Python 脚本时（例如：`C:\projects\中文文件夹\script.py`），由于 PowerShell 对中文路径的编码处理限制，严禁直接使用 `python 中文文件夹\script.py`，必须使用以下标准命令格式。    
+
+
+### 标准命令格式：  
+#### 步骤1: 验证目录结构  
+```bash
+cd <项目根目录>; python -c "import os; print(list(enumerate(os.listdir('.'))))"
+```  
+此命令会列出当前目录下所有文件和文件夹，并显示其索引编号。找到目标中文文件夹对应的索引编号。    
+
+#### 步骤2: 执行脚本（二选一）  
+推荐方案A: exec方式（适用于大多数场景）
+
+# 推荐方案B: subprocess方式（适用于需要独立进程的场景）
+
+```bash
+cd <项目根目录>; python -c "import os, subprocess; os.chdir(os.listdir('.')[<索引>]); subprocess.call(['python', '<脚本名>.py'])"
+```

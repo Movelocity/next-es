@@ -11,7 +11,7 @@ export default function WorkspaceManager() {
   const [newWorkspaceDescription, setNewWorkspaceDescription] = useState('')
   const [isLoading, setIsLoading] = useState(false)
 
-  const { currentWorkspace, switchWorkspace } = useESLogStore()
+  const { currentWorkspace, switchWorkspace, initializeWorkspace } = useESLogStore()
 
   // 加载工作区列表
   const loadWorkspaces = async () => {
@@ -23,9 +23,14 @@ export default function WorkspaceManager() {
     }
   }
 
+  // 初始化工作区（仅在客户端执行一次）
   useEffect(() => {
-    loadWorkspaces()
-  }, [])
+    const init = async () => {
+      await initializeWorkspace()
+      await loadWorkspaces()
+    }
+    init()
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   // 处理工作区切换
   const handleSwitchWorkspace = async (workspaceName: string) => {
@@ -64,11 +69,6 @@ export default function WorkspaceManager() {
 
   // 处理删除工作区
   const handleDeleteWorkspace = async (workspaceName: string) => {
-    if (workspaceName === 'default') {
-      alert('不能删除默认工作区')
-      return
-    }
-
     if (!confirm(`确定要删除工作区 "${workspaceName}" 吗？此操作不可恢复。`)) {
       return
     }
@@ -76,12 +76,18 @@ export default function WorkspaceManager() {
     setIsLoading(true)
     try {
       await deleteWorkspace(workspaceName)
-      await loadWorkspaces()
       
-      // 如果删除的是当前工作区，切换到默认工作区
+      // 如果删除的是当前工作区，需要切换到其他工作区
       if (workspaceName === currentWorkspace) {
-        await handleSwitchWorkspace('default')
+        // 重新加载列表获取剩余工作区
+        const remainingWorkspaces = await getWorkspaces()
+        if (remainingWorkspaces.length > 0) {
+          // 切换到第一个可用工作区
+          await handleSwitchWorkspace(remainingWorkspaces[0].name)
+        }
       }
+      
+      await loadWorkspaces()
     } catch (error) {
       console.error('Failed to delete workspace:', error)
       alert('删除工作区失败')
@@ -136,18 +142,16 @@ export default function WorkspaceManager() {
                 </p>
               </div>
               
-              {workspace.name !== 'default' && (
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    handleDeleteWorkspace(workspace.name)
-                  }}
-                  disabled={isLoading}
-                  className="ml-2 px-2 py-1 text-sm text-red-500 hover:bg-red-500 hover:text-white rounded disabled:opacity-50"
-                >
-                  删除
-                </button>
-              )}
+              <button
+                onClick={(e) => {
+                  e.stopPropagation()
+                  handleDeleteWorkspace(workspace.name)
+                }}
+                disabled={isLoading}
+                className="ml-2 px-2 py-1 text-sm text-red-500 hover:bg-red-500 hover:text-white rounded disabled:opacity-50"
+              >
+                删除
+              </button>
             </div>
           </div>
         ))}

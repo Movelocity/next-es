@@ -99,8 +99,8 @@ function showUserNotification(message: string, type: 'info' | 'warning' | 'error
   if (type !== 'error') {
     setTimeout(() => {
       notification.style.transform = 'translateX(100%)';
-      setTimeout(() => notification.remove(), 300);
-    }, 5000);
+      setTimeout(() => notification.remove(), 3000);
+    }, 50000);
   }
 }
 

@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { query_value1, result_value1 } from '@/utils/examples'
-import { getWorkspaceData, saveWorkspaceData, type WorkspaceData } from '@/utils/workspace'
+import { getWorkspaceData, saveWorkspaceData, getWorkspaces, type WorkspaceData } from '@/utils/workspace'
 
 type StoreStateValues = {
   searchReq: string
@@ -28,6 +28,7 @@ type WorkspaceState = {
   switchWorkspace: (workspaceName: string) => Promise<void>
   syncToServer: () => Promise<void>
   loadWorkspaceData: (workspaceName: string) => Promise<void>
+  initializeWorkspace: () => Promise<void>
   enableWorkspaceSync: () => void
 }
 
@@ -66,6 +67,19 @@ const loadFromLocalStorage: ()=>StoreStateValues = () => {
 };
 
 /**
+ * 获取初始工作区名称
+ * 优先级顺序：
+ * 1. localStorage 中保存的工作区
+ * 2. 如果没有保存，返回空字符串（将在组件初始化时从服务器获取第一个工作区）
+ */
+const getInitialWorkspace = (): string => {
+  if (typeof localStorage === 'undefined') {
+    return '' // SSR 环境，返回空字符串
+  }
+  return localStorage.getItem(S_CurrentWorkspace) || ''
+}
+
+/**
  * 使用建议
  * 如果你在控制台看到以下消息之一：
  * Workspace 'xxx' not found on server, using local data without enabling sync
@@ -74,7 +88,7 @@ const loadFromLocalStorage: ()=>StoreStateValues = () => {
  */
 export const useESLogStore = create<ESLogState>((set, get) => ({
     ...loadFromLocalStorage(),
-    currentWorkspace: 'default', // 初始化时总是使用 'default' 避免 SSR 不匹配
+    currentWorkspace: getInitialWorkspace(), // 从 localStorage 恢复上次选择的工作区
     workspaceDataLoaded: false,
 
     setSearchReq: searchReq => set(() => ({ searchReq })),
@@ -182,6 +196,50 @@ export const useESLogStore = create<ESLogState>((set, get) => ({
         // 出错时也不要设置workspaceDataLoaded为true，避免推送可能有问题的数据
         console.log('Failed to load workspace data, sync disabled to prevent data loss')
         console.log('Call enableWorkspaceSync() if you want to sync current local data to server')
+      }
+    },
+
+    /**
+     * 初始化工作区
+     * 工作区选择优先级：
+     * 1. 使用 localStorage 中保存的工作区（已在初始化时加载）
+     * 2. 如果 localStorage 为空，从服务器获取第一个可用工作区
+     * 3. 如果服务器没有工作区，保持空字符串（需要用户创建）
+     */
+    initializeWorkspace: async () => {
+      const currentWorkspace = get().currentWorkspace
+
+      // 如果已有工作区名称，尝试加载其数据
+      if (currentWorkspace) {
+        console.log(`Initializing with saved workspace: '${currentWorkspace}'`)
+        await get().loadWorkspaceData(currentWorkspace)
+        
+        // 检查加载是否成功，如果失败则回退到第一个可用工作区
+        if (!get().workspaceDataLoaded) {
+          console.log(`Saved workspace '${currentWorkspace}' not found, falling back to first available workspace`)
+          const workspaces = await getWorkspaces()
+          if (workspaces.length > 0) {
+            const firstWorkspace = workspaces[0].name
+            get().setCurrentWorkspace(firstWorkspace)
+            await get().loadWorkspaceData(firstWorkspace)
+          } else {
+            console.log('No workspaces available on server')
+          }
+        }
+        return
+      }
+
+      // 如果没有保存的工作区，获取第一个可用工作区
+      console.log('No saved workspace found, fetching first available workspace from server')
+      const workspaces = await getWorkspaces()
+      
+      if (workspaces.length > 0) {
+        const firstWorkspace = workspaces[0].name
+        console.log(`Initializing with first workspace: '${firstWorkspace}'`)
+        get().setCurrentWorkspace(firstWorkspace)
+        await get().loadWorkspaceData(firstWorkspace)
+      } else {
+        console.log('No workspaces available on server. Please create a workspace to get started.')
       }
     },
 

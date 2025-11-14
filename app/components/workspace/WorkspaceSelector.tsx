@@ -14,7 +14,7 @@ export default function WorkspaceSelector({ className = '' }: WorkspaceSelectorP
   const [isOpen, setIsOpen] = useState(false)
   const [isHydrated, setIsHydrated] = useState(false)
 
-  const { currentWorkspace, switchWorkspace } = useESLogStore()
+  const { currentWorkspace, switchWorkspace, initializeWorkspace } = useESLogStore()
 
   // 加载工作区列表
   const loadWorkspaces = async () => {
@@ -26,9 +26,14 @@ export default function WorkspaceSelector({ className = '' }: WorkspaceSelectorP
     }
   }
 
+  // 初始化工作区（仅在客户端执行一次）
   useEffect(() => {
-    loadWorkspaces()
-  }, [])
+    const init = async () => {
+      await initializeWorkspace()
+      await loadWorkspaces()
+    }
+    init()
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   // 标记组件已水合，避免 SSR 不匹配
   useEffect(() => {
@@ -63,8 +68,8 @@ export default function WorkspaceSelector({ className = '' }: WorkspaceSelectorP
         disabled={isLoading}
         className="flex items-center gap-2 p-1 disabled:opacity-50"
       >
-        <span className="text-sm text-gray-200">工作区:</span>
-        <span className="font-medium text-white">{isHydrated ? currentWorkspace : 'default'}</span>
+        <span className="text-sm text-gray-200">工作区</span>
+        <span className="font-medium text-white">{isHydrated ? (currentWorkspace || '加载中...') : ''}</span>
         <svg
           className={`w-4 h-4 text-gray-300 transition-transform ${isOpen ? 'rotate-180' : ''}`}
           fill="none"
