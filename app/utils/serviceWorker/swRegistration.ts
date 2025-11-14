@@ -24,14 +24,27 @@ let errorCount = 0;
 let lastErrorTime = 0;
 
 /**
- * 显示用户通知
+ * 显示深色主题用户通知
  * @param message 通知消息
  * @param type 通知类型
  * @param actions 可选的操作按钮
  */
-function showUserNotification(message: string, type: 'info' | 'warning' | 'error' = 'info', actions?: Array<{text: string, action: () => void}>) {
-  // 创建通知元素
+function showUserNotification(
+  message: string, 
+  type: 'info' | 'warning' | 'error' = 'info', 
+  actions?: Array<{text: string, action: () => void}>
+) {
   const notification = document.createElement('div');
+  
+  // 深色主题颜色配置
+  const colors = {
+    info: { bg: '#1e293b', border: '#334155', text: '#f1f5f9' },
+    warning: { bg: '#451a03', border: '#78350f', text: '#fed7aa' },
+    error: { bg: '#450a0a', border: '#7f1d1d', text: '#fecaca' }
+  };
+  
+  const currentColor = colors[type];
+  
   notification.style.cssText = `
     position: fixed;
     top: 20px;
@@ -39,33 +52,38 @@ function showUserNotification(message: string, type: 'info' | 'warning' | 'error
     max-width: 400px;
     padding: 16px;
     border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border: 1px solid ${currentColor.border};
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
     z-index: 10000;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     font-size: 14px;
     line-height: 1.4;
-    color: white;
-    background: ${type === 'error' ? '#ef4444' : type === 'warning' ? '#f59e0b' : '#3b82f6'};
+    color: ${currentColor.text};
+    background: ${currentColor.bg};
     transition: all 0.3s ease;
     transform: translateX(100%);
+    backdrop-filter: blur(10px);
   `;
   
   notification.innerHTML = `
-    <div style="display: flex; align-items: center; justify-content: space-between;">
+    <div style="display: flex; align-items: flex-start; justify-content: space-between;">
       <div style="flex: 1; margin-right: 12px;">${message}</div>
       <button style="
-        background: rgba(255, 255, 255, 0.2);
         border: none;
-        color: white;
+        color: currentColor;
         padding: 4px 8px;
         border-radius: 4px;
         cursor: pointer;
-        font-size: 12px;
+        font-size: 16px;
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
       " onclick="this.parentElement.parentElement.remove()">×</button>
     </div>
   `;
   
-  // 添加操作按钮
   if (actions && actions.length > 0) {
     const actionsDiv = document.createElement('div');
     actionsDiv.style.cssText = 'margin-top: 12px; display: flex; gap: 8px;';
@@ -74,17 +92,17 @@ function showUserNotification(message: string, type: 'info' | 'warning' | 'error
       const button = document.createElement('button');
       button.textContent = text;
       button.style.cssText = `
-        background: rgba(255, 255, 255, 0.2);
-        border: 1px solid rgba(255, 255, 255, 0.3);
-        color: white;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255,  255, 0.2);
+        color: currentColor;
         padding: 6px 12px;
-        border-radius: 4px;
+        border-radius: 6px;
         cursor: pointer;
         font-size: 12px;
-        transition: background 0.2s ease;
+        transition: all 0.2s ease;
       `;
-      button.onmouseover = () => button.style.background = 'rgba(255, 255, 255, 0.3)';
-      button.onmouseout = () => button.style.background = 'rgba(255, 255, 255, 0.2)';
+      button.onmouseover = () => button.style.background = 'rgba(255, 255, 255, 0.2)';
+      button.onmouseout = () => button.style.background = 'rgba(255, 255, 255, 0.1)';
       button.onclick = () => {
         action();
         notification.remove();
@@ -97,17 +115,15 @@ function showUserNotification(message: string, type: 'info' | 'warning' | 'error
   
   document.body.appendChild(notification);
   
-  // 动画显示
   setTimeout(() => {
     notification.style.transform = 'translateX(0)';
   }, 10);
   
-  // 自动隐藏（除非是错误类型）
   if (type !== 'error') {
     setTimeout(() => {
       notification.style.transform = 'translateX(100%)';
-      setTimeout(() => notification.remove(), 3000);
-    }, 50000);
+      setTimeout(() => notification.remove(), 300);
+    }, 5000);
   }
 }
 
