@@ -2,7 +2,14 @@
  * Service Worker Registration and Management
  *
  * 增强版service worker管理，包含版本检测、错误恢复和用户通知功能
+ * 
+ * 开发模式特性：
+ * - 自动检测并清理已有的 Service Worker
+ * - 跳过 Service Worker 注册
+ * - 不干扰热模块替换（HMR）
  */
+
+import { detectAndCleanupSW, isDevelopmentMode } from './devTools';
 
 // 检查是否在开发模式
 const isDevelopment = process.env.NODE_ENV === 'development';
@@ -251,22 +258,46 @@ function handleServiceWorkerMessage(event: MessageEvent) {
 
 /**
  * 注册Service Worker（增强版）
+ * 
+ * 开发模式：
+ * - 自动清理已有的 Service Worker
+ * - 跳过新的 Service Worker 注册
+ * 
+ * 生产模式：
+ * - 注册 Service Worker 并传递环境参数
+ * - 启用版本检测和自动更新
  */
-export function register() {
-  // 在开发模式下跳过注册
+export async function register() {
+  // 开发模式处理
   if (isDevelopment) {
-    console.log('Service worker registration skipped in development mode');
+    console.log('[SW Dev] 检测到开发模式');
+    
+    // 自动清理已有的 Service Worker
+    try {
+      const cleanup = await detectAndCleanupSW();
+      if (cleanup.unregistered > 0 || cleanup.cachesCleared > 0) {
+        console.log('[SW Dev] 清理完成，开发环境已准备就绪');
+      }
+    } catch (error) {
+      console.error('[SW Dev] 清理失败:', error);
+    }
+    
+    console.log('[SW Dev] Service Worker 注册已跳过，支持热重载');
     return;
   }
 
   if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
     window.addEventListener('load', async () => {
       try {
-        const swUrl = '/serviceWorker.js';
+        // 生产模式：注册时附加环境参数
+        const env = process.env.NODE_ENV || 'production';
+        const swUrl = `/serviceWorker.js?__env=${env}&v=${Date.now()}`;
+        
+        console.log('[SW] 正在注册 Service Worker...');
         
         // 注册Service Worker
         const registration = await navigator.serviceWorker.register(swUrl);
-        console.log('ServiceWorker registration successful:', registration);
+        console.log('[SW] Service Worker 注册成功:', registration.scope);
         
         // 监听Service Worker更新
         registration.addEventListener('updatefound', () => {

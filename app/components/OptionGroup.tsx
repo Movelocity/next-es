@@ -32,8 +32,8 @@ const OptionGroup: React.FC<OptionGroupProps> = ({ defaultOption, options, onSel
   };
 
   return (
-    <div className={cn("flex flex-col w-full", className)} style={{width: width}}>
-      <div className="flex flex-row justify-between">
+    <div className={cn("flex flex-col w-full max-h-[95vh]", className)} style={{width: width}}>
+      <div className="flex flex-row justify-between flex-wrap">
         <div className="flex-1 flex flex-row">
           {options.map((option) => (
             <div
@@ -52,7 +52,7 @@ const OptionGroup: React.FC<OptionGroupProps> = ({ defaultOption, options, onSel
         )}
       </div>
       {children && (
-        <div className="flex-1">
+        <div className="flex-1 ">
           {React.Children.toArray(children)[options.indexOf(selectedValue)]}
         </div>
       )}

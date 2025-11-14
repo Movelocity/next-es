@@ -201,7 +201,31 @@ async function handleFetch(event) {
 
 // Service Worker 安装
 self.addEventListener('install', (event) => {
-  console.log('Service Worker installing...');
+  console.log('[SW] Service Worker installing...');
+  
+  // 环境检测：开发模式下拒绝安装
+  try {
+    const params = new URLSearchParams(self.location.search);
+    const env = params.get('__env');
+    
+    if (env === 'development') {
+      console.log('[SW] 检测到开发环境，拒绝安装 Service Worker');
+      console.log('[SW] 这确保了热重载功能正常工作');
+      
+      // 立即注销自己
+      event.waitUntil(
+        self.registration.unregister().then(() => {
+          console.log('[SW] 开发模式 Service Worker 已自动注销');
+        })
+      );
+      
+      return; // 终止安装流程
+    }
+    
+    console.log('[SW] 环境检测通过，继续安装 (env: ' + env + ')');
+  } catch (error) {
+    console.warn('[SW] 环境检测失败，继续安装:', error);
+  }
   
   event.waitUntil(
     (async () => {
@@ -217,7 +241,7 @@ self.addEventListener('install', (event) => {
         headers: { 'Content-Type': 'application/json' }
       }));
       
-      console.log('Service Worker installed successfully');
+      console.log('[SW] Service Worker 安装成功');
       
       // 跳过等待，立即激活
       self.skipWaiting();
@@ -227,7 +251,7 @@ self.addEventListener('install', (event) => {
 
 // Service Worker 激活
 self.addEventListener('activate', (event) => {
-  console.log('Service Worker activating...');
+  console.log('[SW] Service Worker activating...');
   
   event.waitUntil(
     (async () => {
@@ -237,7 +261,7 @@ self.addEventListener('activate', (event) => {
       // 立即控制所有客户端
       await self.clients.claim();
       
-      console.log('Service Worker activated successfully');
+      console.log('[SW] Service Worker 激活成功');
       
       // 通知所有客户端Service Worker已更新
       const clients = await self.clients.matchAll();
