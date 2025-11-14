@@ -16,12 +16,18 @@ type StoreState = StoreStateValues & {
   storeSearchReq: (text: string) => void
   storeSearchRes: (text: string) => void
   setGlobalSearchParams: (params: Record<string, string>) => void
-  storeGlobalSearchParams: (params: Record<string, string>) => void
-  storeQueryCardsStr: (queryCardsStr: string) => void
+  setQueryCardsStr: (queryCardsStr: string) => void
   setValueFilter: (valueFilter: string) => void
+  setTimeLast24Hours: () => void
 }
 
 type WorkspaceState = {
+  isSearching: boolean
+  setIsSearching: (isSearching: boolean) => void
+  cancelSearching: () => void
+  searchingControl?: AbortController // abort controller
+  setSearchingControl: (searchingControl: AbortController) => void
+
   currentWorkspace: string
   workspaceDataLoaded: boolean
   setCurrentWorkspace: (workspaceName: string) => void
@@ -88,6 +94,16 @@ const getInitialWorkspace = (): string => {
  */
 export const useESLogStore = create<ESLogState>((set, get) => ({
     ...loadFromLocalStorage(),
+
+    /** 搜索状态控制 */
+    isSearching: false,
+    setIsSearching: (isSearching: boolean) => set(() => ({ isSearching })),
+    cancelSearching: () => {
+      get().searchingControl?.abort?.();
+      set(() => ({ isSearching: false, searchingControl: undefined }))
+    },
+    setSearchingControl: (searchingControl: AbortController) => set(() => ({ searchingControl })),
+
     currentWorkspace: getInitialWorkspace(), // 从 localStorage 恢复上次选择的工作区
     workspaceDataLoaded: false,
 
@@ -104,14 +120,9 @@ export const useESLogStore = create<ESLogState>((set, get) => ({
       setTimeout(() => get().syncToServer(), 100)
     },
     storeSearchRes: (searchRes: string) => {  //这段文本太长，只存本地，不用保存到服务器
-      set((state) => {
-        const newState = { ...state, searchRes };
-        localStorage.setItem(S_RES, searchRes)
-        return newState;
-      });
+      localStorage.setItem(S_RES, searchRes)
     },
-    setGlobalSearchParams: (params: Record<string, string>) => set(() => ({ gSearchParams: params })),
-    storeGlobalSearchParams: (params)=> {
+    setGlobalSearchParams: (params: Record<string, string>) => {
       set((state) => {
         const newState = { ...state, gSearchParams: params };
         localStorage.setItem(S_GParam, JSON.stringify(params))
@@ -120,7 +131,7 @@ export const useESLogStore = create<ESLogState>((set, get) => ({
       // 异步同步到服务器
       setTimeout(() => get().syncToServer(), 100)
     },
-    storeQueryCardsStr: (queryCardsStr) =>{
+    setQueryCardsStr: (queryCardsStr) =>{
       set((state) => {
         const newState = { ...state, queryCardsStr };
         localStorage.setItem(S_QueryCard, queryCardsStr)
@@ -137,6 +148,17 @@ export const useESLogStore = create<ESLogState>((set, get) => ({
       }
       // 异步同步到服务器
       setTimeout(() => get().syncToServer(), 100)
+    },
+
+    setTimeLast24Hours: () => {
+      // gSearchParams: s_gparam? JSON.parse(s_gparam) : {"$开始时间": "2024-10-13 00:00:00", "$结束时间": "2024-10-14 00:00:00"}, 
+      // 当地时间
+      const now = new Date()
+      const startTime = new Date(now.getTime() - 24 * 60 * 60 * 1000)
+      const endTime = new Date()
+      const startTimeStr = startTime.toLocaleString('zh-CN', { timeZone: 'Asia/Shanghai' })
+      const endTimeStr = endTime.toLocaleString('zh-CN', { timeZone: 'Asia/Shanghai' })
+      get().setGlobalSearchParams({"$开始时间": startTimeStr, "$结束时间": endTimeStr})
     },
 
     // 工作区相关方法

@@ -1,9 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react'
-import { useESLogStore } from '@/components/EsLogPanel/store'
+import { useESLogStore } from '@/store/esLogStore'
 import CardModal from '@/components/ParamCards/CardModal'
-import TemplateCard from '@/components/ParamCards/TemplateCard'
+import {TemplateCard, KvGroup} from '@/components/ParamCards'
 import { titleTemplate, queryTemplate } from '@/utils/examples'
-import {KeyValuePairGroup} from './KeyValuePair';
 
 type QueryCardState = {
   id: number
@@ -21,7 +20,13 @@ const findAvailableId = (cards: QueryCardState[]) => {
 }
 
 const QueryCards = () => {
-  const { queryCardsStr, storeQueryCardsStr, setGlobalSearchParams, storeGlobalSearchParams, gSearchParams } = useESLogStore()
+  const { 
+    queryCardsStr,
+    gSearchParams,
+    setQueryCardsStr, 
+    setGlobalSearchParams, 
+    setTimeLast24Hours 
+  } = useESLogStore()
   const [ showEditorModal, setShowEditorModal ] = useState(false)
   const [ queryCards, setQueryCards ] = useState<QueryCardState[]>([])
   const editingCardId = useRef(-1);
@@ -42,20 +47,25 @@ const QueryCards = () => {
   useEffect(() => {
     // 确保只有在有实际数据时才进行保存
     if (hasReadlocalStorage.current && queryCards.length > 0) {
-      storeQueryCardsStr(JSON.stringify(queryCards))
+      setQueryCardsStr(JSON.stringify(queryCards))
       console.log('queryCards updated')
     }
-  }, [queryCards, storeQueryCardsStr]);
+  }, [queryCards, setQueryCardsStr]);
 
   return (
     <div className="max-h-[calc(100vh-36px)] flex flex-col overflow-hidden">
       {clientSideLoaded && <div className='flex-shrink-0 h-24 bg-zinc-900 w-full py-2 px-4'>
-        全局变量
-        <KeyValuePairGroup pairs={gSearchParams} onUpdate={(key_name, newValue) => {
-          const newParams = {...gSearchParams, [key_name]: newValue}
-          setGlobalSearchParams(newParams)
-          storeGlobalSearchParams(newParams)
-        }}/>
+        <div className='flex flex-row justify-between items-center'>
+          <div className='text-gray-300 text-sm'>全局变量</div>
+          <div className='text-gray-400 text-xs cursor-pointer' onClick={()=>setTimeLast24Hours()}>近24小时</div>
+        </div>
+        <KvGroup 
+          pairs={gSearchParams} 
+          onUpdate={(key_name, newValue) => {
+            const newParams = {...gSearchParams, [key_name]: newValue}
+            setGlobalSearchParams(newParams)
+          }}
+        />
       </div>}
       <div className='flex-1 min-h-0 w-full overflow-y-auto custom-scroll'>
         <div className='flex flex-col items-center py-2 gap-2'>
@@ -109,7 +119,7 @@ const QueryCards = () => {
                 if(editingCardId.current === -1) return
                 if(queryCards.length === 1) {  // 如果只有一个卡片，则清空
                   setQueryCards([]);
-                  storeQueryCardsStr('[]');
+                  setQueryCardsStr('[]');
                 } else {
                   setQueryCards(queryCards.filter(c=>c.id !== editingCardId.current))
                 }

@@ -7,7 +7,7 @@
  * @param jsonQuery 查询条件，格式按照ES的查询语法
  * @returns 查询结果，格式化后的json字符串
  */
-export const run_query = async (method: string, index:string, jsonQuery:string) =>{
+export const run_query = async (method: string, index:string, jsonQuery:string, signal?: AbortSignal) =>{
   try {
     JSON.parse(jsonQuery); // Validate JSON
   } catch (error) {
@@ -18,7 +18,8 @@ export const run_query = async (method: string, index:string, jsonQuery:string) 
     headers: {
       'Content-Type': 'application/json'
     },
-    body: jsonQuery
+    body: jsonQuery,
+    signal: signal
   })
   if (!response.ok) {
     throw new Error(`HTTP error! status: ${response.status}`);

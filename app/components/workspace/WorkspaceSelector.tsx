@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useESLogStore } from '@/components/EsLogPanel/store'
+import { useESLogStore } from '@/store/esLogStore'
 import { getWorkspaces, type Workspace } from '@/utils/workspace'
 
 interface WorkspaceSelectorProps {
@@ -94,8 +94,8 @@ export default function WorkspaceSelector({ className = '' }: WorkspaceSelectorP
           />
           
           {/* 下拉选项 */}
-          <div className="absolute top-full left-0 mt-1 w-64 bg-zinc-900 text-white rounded-md border border-zinc-700 z-20 max-h-60 overflow-y-auto">
-            <div className="p-2">
+          <div className="absolute top-full left-0 mt-1 w-[200px] bg-zinc-900 text-white rounded-md border border-zinc-700 z-20 max-h-60 overflow-y-auto">
+            <div className="py-2">
               <div className="text-xs mb-2 px-2">选择工作区</div>
               
               {workspaces.map((workspace) => (

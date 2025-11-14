@@ -102,15 +102,18 @@ const RecordItem: React.FC<RecordItemProps> = ({ data }) => {
   return (
     <div ref={itemRef} className="flex flex-col w-[98%] mx-2 my-1 rounded-sm border border-gray-500 border-solid bg-gray-800">
       {/** 点击展开详情 */}
-      <div className="flex flex-row justify-start items-end hover:bg-gray-700 cursor-pointer px-2 sticky top-0 z-10 bg-gray-800" onClick={handleDetailToggle}>
+      <div 
+        className="flex flex-row justify-start items-end hover:bg-gray-700 group cursor-pointer px-2 sticky top-0 z-10 bg-gray-800" 
+        onClick={handleDetailToggle}
+      >
         <div className=""> &gt; </div>
         <div className="text-gray-300 ml-2 text-sm">{data.param}</div>
         <div className="ml-2">{data.message.slice(0, 41)}</div>
-        <div className='absolute right-7 text-gray-300 text-sm'>{data.createTime}</div>
+        <div className='absolute right-7 text-gray-300 text-sm bg-gray-800 group-hover:bg-gray-700 pl-3'>{data.createTime}</div>
       </div>
 
       {showDetail && (
-        <div className="px-2 relative">
+        <div className="px-2 relative group">
           <CodeMirror 
             value={displayContent} 
             max-height="150px"
@@ -126,11 +129,11 @@ const RecordItem: React.FC<RecordItemProps> = ({ data }) => {
             }}
           />
           <button 
-            className="absolute right-4 top-2 bg-gray-700 hover:bg-gray-600 rounded-sm px-1 text-xs" 
+            className="absolute right-4 top-2 bg-gray-700 hover:bg-gray-600 rounded-sm px-1 text-xs hidden group-hover:block" 
             onClick={autoFormatJson}
             title="根据{}自动格式化。若格式化失败需手动选择文本区域, Ctrl+Enter"
           >
-            Format
+            JSON格式化
           </button>
         </div>
       )}

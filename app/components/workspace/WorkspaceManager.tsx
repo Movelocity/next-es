@@ -1,7 +1,8 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useESLogStore } from '@/components/EsLogPanel/store'
+import { useESLogStore } from '@/store/esLogStore'
+
 import { getWorkspaces, createWorkspace, deleteWorkspace, type Workspace } from '@/utils/workspace'
 
 export default function WorkspaceManager() {

@@ -1,11 +1,11 @@
 import React, { useRef, useState } from 'react'
-import { useESLogStore } from './store'
+import { useESLogStore } from '@/store/esLogStore'
 import { parseEsLog } from '@/utils/text_process'
 import { clearAllServiceWorkers } from '@/utils/serviceWorker/swRegistration'
 import WorkspaceManager from '@/components/workspace/WorkspaceManager'
 
 const Config = () => {
-  const { searchRes, valueFilter, setSearchRes, storeQueryCardsStr, storeGlobalSearchParams, setValueFilter, currentWorkspace } = useESLogStore();
+  const { searchRes, valueFilter, setSearchRes, setQueryCardsStr, setGlobalSearchParams, setValueFilter, currentWorkspace } = useESLogStore();
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [valueFilterEdit, setValueFilterEdit] = useState(valueFilter)
   
@@ -46,17 +46,17 @@ const Config = () => {
         // Check if it's the combined format
         if (importedData.queryCards && importedData.globalParams) {
           // Import query cards
-          storeQueryCardsStr(JSON.stringify(importedData.queryCards))
+          setQueryCardsStr(JSON.stringify(importedData.queryCards))
 
           // Import global params
-          storeGlobalSearchParams(importedData.globalParams)
+          setGlobalSearchParams(importedData.globalParams)
 
           const workspaceInfo = importedData.workspace ? ` (来自工作区: ${importedData.workspace})` : ''
           alert(`成功导入配置到当前工作区 "${currentWorkspace}"${workspaceInfo}`)
         }
         // Check if it's the old format (just query cards)
         else if (Array.isArray(importedData)) {
-          storeQueryCardsStr(content)
+          setQueryCardsStr(content)
           alert('成功导入查询卡片')
         }
         else {

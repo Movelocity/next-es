@@ -45,15 +45,15 @@ const CardModal: React.FC<CardModalProps> = ({title, content, onSave, onDelete, 
       show={true}
       closeOnBgClick={false}
       closeModal={closeModal}
-      classNames='bg-zinc-900 border border-zinc-700 border-solid rounded-xl shadow-lg backdrop-blur-sm'
+      classNames='bg-zinc-800 border border-zinc-500 border-solid rounded-xl shadow-lg backdrop-blur-sm'
     >
       <div className='w-[900px] flex flex-col space-y-2 p-3'>
         {/* Title Input Section */}
         <div className="flex items-center gap-2">
           <span className="text-neutral-200 font-medium">标题:</span>
           <input 
-            className="flex-1 bg-zinc-700/90 px-2.5 py-1 rounded-md outline-none border border-zinc-600/50 
-                       focus:ring-1 focus:ring-sky-500/70 focus:border-sky-500/50 transition-all duration-200"
+            className="flex-1 bg-gray-700/90 px-2.5 py-1 rounded-md outline-none border border-zinc-600/50 
+                       focus:ring-1 focus:ring-blue-600/70 focus:border-blue-500/50 transition-all duration-200"
             value={titleText}
             onChange={(e) => setTitleText(e.target.value)}
             spellCheck={false}
@@ -72,7 +72,7 @@ const CardModal: React.FC<CardModalProps> = ({title, content, onSave, onDelete, 
         </div>
 
         {/* CodeMirror Editor */}
-        <div className="rounded-lg overflow-hidden border border-zinc-700/50">
+        <div className="rounded-lg overflow-hidden border border-gray-700/50">
           <CodeMirror 
             value={contentText} 
             height="450px"

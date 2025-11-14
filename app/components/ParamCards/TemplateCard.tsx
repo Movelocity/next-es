@@ -3,8 +3,8 @@
 import React, { useState, useEffect } from 'react';
 import { parseReqCtx } from '@/utils/text_process'
 import { run_query } from '@/utils/service'
-import { useESLogStore } from '@/components/EsLogPanel/store'
-import { KeyValuePair } from './KeyValuePair';
+import { useESLogStore } from '@/store/esLogStore'
+import { KvItem } from '@/components/ParamCards';
 
 type TemplateCardState = {
   id: number
@@ -14,10 +14,15 @@ type TemplateCardState = {
 };
 
 const TemplateCard: React.FC<TemplateCardState> = ({ id, title, templateStr, onEdit }) => {
-  const { setSearchRes, storeSearchRes, gSearchParams } = useESLogStore()
-
+  const { 
+    gSearchParams,
+    setSearchRes, 
+    storeSearchRes, 
+    cancelSearching,
+    setIsSearching,
+    setSearchingControl,
+  } = useESLogStore()
   const [kvMap, setKvMap] = useState<{ [key: string]: string }>({});
-  
 
   useEffect(() => {
     // Function to parse searchText and initialize kvMap
@@ -62,10 +67,15 @@ const TemplateCard: React.FC<TemplateCardState> = ({ id, title, templateStr, onE
     const { method, target, requestText } = req_ctx
     console.log("requestText", requestText);
     try{
-      const responseText = await run_query(method, target, requestText)
+      setIsSearching(true)
+      const searchingControl = new AbortController()
+      setSearchingControl(searchingControl)
+      const responseText = await run_query(method, target, requestText, searchingControl.signal as AbortSignal)
+      cancelSearching()  // 自动清理资源，包括 abort controller
       setSearchRes(responseText)
       storeSearchRes(responseText)
     } catch (e) {
+      cancelSearching()
       console.log(e)
     }
   };
@@ -75,13 +85,13 @@ const TemplateCard: React.FC<TemplateCardState> = ({ id, title, templateStr, onE
       <div className='flex flex-row items-center justify-between'>
         <div className='font-bold'>{title}</div>
         <div className="flex flex-row">
-          <button onClick={()=>onEdit(id)} className="px-2 hover:bg-zinc-600 bg-zinc-700 rounded-sm cursor-pointer text-sm">Edit</button>
-          <button onClick={handleRun} className="px-2 hover:bg-sky-600 bg-sky-700 rounded-sm cursor-pointer text-sm ml-2">Run</button>
+          <button onClick={()=>onEdit(id)} className="px-2 hover:bg-zinc-600 bg-zinc-700 rounded-sm cursor-pointer text-sm">编辑</button>
+          <button onClick={handleRun} className="px-2 hover:bg-sky-600 bg-sky-700 rounded-sm cursor-pointer text-sm ml-2">运行</button>
         </div>
       </div>
       <div className='flex flex-col w-full'>
         {Object.entries(kvMap).filter(([key_name]) => !key_name.startsWith('$')).map(([key_name, value], index) => (
-          <KeyValuePair 
+          <KvItem 
             key={index} 
             index={index}
             key_name={key_name} 

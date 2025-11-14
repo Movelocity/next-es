@@ -2,7 +2,8 @@
 import React, { useState, useEffect } from 'react'
 import RecordItem, { RecordItemData } from '@/components/SearchResults/RecordItem'
 import { parseEsLog } from '@/utils/text_process'
-import { useESLogStore } from '@/components/EsLogPanel/store'
+import { useESLogStore } from '@/store/esLogStore'
+
 interface RecordListProps {
   searchRes: string
 }
@@ -35,7 +36,7 @@ const RecordList: React.FC<RecordListProps> = ({ searchRes }) => {
   }, [searchRes, valueFilter])
 
   return (
-    <div className="flex-1 flex flex-col justify-start w-full overflow-y-scroll h-[calc(100vh-24px)] custom-scroll bg-zinc-900">
+    <div className="flex-1 flex flex-col overflow-y-scroll h-[calc(96vh)] custom-scroll bg-zinc-900">
       {records.map((record: RecordItemData, index: number) => (
         <RecordItem key={index} data={record} />
       ))}

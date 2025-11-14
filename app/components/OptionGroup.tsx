@@ -38,7 +38,7 @@ const OptionGroup: React.FC<OptionGroupProps> = ({ defaultOption, options, onSel
           {options.map((option) => (
             <div
               key={option}
-              className={`cursor-pointer px-2 py-1 rounded-t-sm hover:bg-slate-800 ${selectedValue === option ? 'bg-gray-700' : ''}`}
+              className={`text-nowrap cursor-pointer px-2 py-1 rounded-t-sm hover:bg-gray-800 ${selectedValue === option ? 'bg-gray-700' : ''}`}
               onClick={() => handleClick(option)}
             >
               {option}
